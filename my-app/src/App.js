@@ -60,7 +60,7 @@ function App(props: Props) {
         <GlobalStyle />
         <Conteiner>
           <TxtBtn onClick={() => themeToggler(setTheme, theme)} size={10}>
-            Hell1234
+            Helll1234
           </TxtBtn>
           <LogosComponents />
           <ChessComponent />
