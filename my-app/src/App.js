@@ -8,6 +8,7 @@ import { themeToggler } from "./Helper";
 import LogosComponents from "./Components/LogosComponents";
 import ChessComponent from "./Components/ChessComponent";
 import CountriesComponent from "./Components/CountriesComponent";
+import TokenComponent from "./Components/TokenComponent";
 
 type Props = {
   bg: string,
@@ -37,7 +38,7 @@ const Conteiner = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100vh;
+  height: 90vh;
 `;
 
 const TxtBtn = styled.button.attrs((props) => ({
@@ -66,6 +67,7 @@ function App(props: Props) {
           <ChessComponent />
         </Conteiner>
         <CountriesComponent />
+        <TokenComponent />
       </ThemeProvider>
     </>
   );
