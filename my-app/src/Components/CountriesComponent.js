@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { addCountries } from "../Helper";
+
 const CountriesConteiner = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -30,7 +31,9 @@ const CountriesComponent = (props) => {
       <button onClick={() => addCountries(setCountries, country, countries)}>
         Click
       </button>
+
       <input type="text" onChange={(e) => setCountry(e.target.value)} />
+      <p id="test"></p>
       <CountriesConteiner>
         {countries.map((item) => (
           <Countries key={item.numericCode}>
