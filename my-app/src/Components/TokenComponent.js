@@ -1,22 +1,41 @@
 import React, { useState, useEffect } from "react";
-import { testFunc } from "../getPlayerInfo/getToken";
+import { getToken } from "../getPlayerInfo/getToken";
 import { getLogin } from "../getPlayerInfo/getLogin";
 import { joinFunc } from "../getPlayerInfo/joinFunc";
+import { getStatistic } from "../getPlayerInfo/getStatistic";
+import {
+  getLoginUrl,
+  getTokenUrl,
+  getStatisticUrl,
+  joinFuncUrl,
+  dataToken,
+  dataLogin,
+  dataStat,
+  dataJoinFunc,
+} from "../config/index";
+
 const TokenComponent = () => {
   const [result, setResult] = useState("");
-
+  const [playerId, setPlayerId] = useState(null);
+  const [stat, setStat] = useState({});
   useEffect(() => {
     console.log(result.substr(0, 5));
-    getLogin(result);
+    getLogin(setPlayerId, getLoginUrl, dataLogin(result));
+    getStatistic(setStat, getStatisticUrl, dataStat(result));
   }, [result]);
 
   useEffect(() => {
-    testFunc(setResult);
+    getToken(setResult, getTokenUrl, dataToken);
   }, []);
-
   return (
     <div>
-      <button onClick={() => joinFunc(result)}>Get Token</button>
+      <button
+        onClick={() =>
+          joinFunc(stat, joinFuncUrl, dataJoinFunc(result, playerId))
+        }
+      >
+        Get Token
+      </button>
     </div>
   );
 };

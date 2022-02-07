@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import styled, {
-  css,
-  createGlobalStyle,
-  ThemeProvider,
-  keyframes,
-} from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 const blink = keyframes`
     from {

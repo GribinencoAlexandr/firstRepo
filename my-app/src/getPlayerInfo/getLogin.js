@@ -1,15 +1,8 @@
-export const getLogin = (result) => {
-  const data = {
-    gameId: "5",
-    token: result,
-  };
-  fetch("https://services.xpgtesting.com/BJService/Login", {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => res.json())
-    .then((result) => console.log(result));
+import axios from "axios";
+export const getLogin = (setId, url, dataLogin) => {
+  axios.post(url, dataLogin).then((result) => {
+    setId(result.data.playerID);
+    console.log(result.data.playerID);
+    console.log("asd", result);
+  });
 };
