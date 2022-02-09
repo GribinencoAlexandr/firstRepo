@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const joinFunc = (stat, url, data) => {
+export const joinFunc = (stat, url, data, gameStat) => {
   // const data = {
   //   ClientGameSequence: 0,
   //   CommKey: token.substr(0, 5),
@@ -9,5 +9,8 @@ export const joinFunc = (stat, url, data) => {
   // };
   // console.log(playerId);
   console.log(stat);
-  axios.post(url, data).then((result) => console.log("sda", result));
+  axios.post(url, data).then((result) => {
+    gameStat(result.data);
+    console.log("sda", result);
+  });
 };
