@@ -1,8 +1,9 @@
 import axios from "axios";
-export const getLogin = (setId, url, dataLogin) => {
-  axios.post(url, dataLogin).then((result) => {
+export const getLogin = (setId, setInfo, url, data) => {
+  axios.post(url, data).then((result) => {
     setId(result.data.playerID);
-    console.log(result.data.playerID);
-    console.log("asd", result);
+    setInfo(result.data);
+    // console.log(result.data.playerID);
+    // console.log("asd", result);
   });
 };

@@ -7,7 +7,7 @@ export const getStatistic = (setStat, url, data) => {
   //     statisticsItems: 100,
   //   };
   axios.post(url, data).then((response) => {
-    setStat(response);
+    setStat(response.data);
     console.log("1234", response);
   });
 };
