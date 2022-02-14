@@ -1,15 +1,13 @@
 // @flow
 import "./App.css";
-import React from "react";
-
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { getToken } from "./Services/tokenThunks";
 import TokenComponent from "./Components/TokenComponent";
-type Props = {
-  bg: string,
-  primary: boolean,
-  weight: number,
-};
+import { getTokenUrl, dataToken } from "./config/index";
+import { getTokenAC } from "./store/getToken/actions";
 
-function App(props: Props) {
+function App() {
   return (
     <>
       <TokenComponent />

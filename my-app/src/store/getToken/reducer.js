@@ -1,8 +1,14 @@
 import { createReducer } from "@reduxjs/toolkit";
-import { getTokenAC } from "./actions";
 
 export default createReducer([], {
-  [getTokenAC.type]: (_, action) => {
-    return action.payload;
-  },
+  GET_TOKEN: () => ({
+    data: [],
+    loading: true,
+    error: false,
+  }),
+  GET_TOKEN_SUCCESS: (_, action) => ({
+    data: action.payload,
+    loading: true,
+    error: false,
+  }),
 });

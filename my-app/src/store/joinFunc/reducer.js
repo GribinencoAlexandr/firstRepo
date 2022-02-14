@@ -1,7 +1,7 @@
 import { createReducer } from "@reduxjs/toolkit";
 
 export default createReducer([], {
-  GET_LOGIN: (_, action) => {
+  JOIN_FUNC: (_, action) => {
     return {
       data: action.payload,
       loading: false,

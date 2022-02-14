@@ -1,8 +1,11 @@
 import { createReducer } from "@reduxjs/toolkit";
-import { getStatisticAC } from "./actions";
 
 export default createReducer([], {
-  [getStatisticAC.type]: (_, action) => {
-    return action.payload;
+  GET_STATISTIC: (_, action) => {
+    return {
+      data: action.payload,
+      loading: false,
+      error: false,
+    };
   },
 });
