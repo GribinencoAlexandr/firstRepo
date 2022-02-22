@@ -1,0 +1,40 @@
+.barItemName {
+  margin: 4px 4px 0 6px;
+}
+.barItemProgressbar {
+  background: dimgray;
+}
+.evenColor {
+  color: white !important;
+}
+.colorTier {
+  color: dimgray;
+}
+.colorOrphelins {
+  color: lightgray;
+}
+.colorVoisins {
+  color: lightgreen;
+}
+.colorZero {
+  color: green;
+}
+.someClass:last-child {
+  position: absolute;
+  right: 5px;
+  padding-right: 0;
+}
+.firstCircle {
+  align-items: flex-start !important;
+}
+.lastCircle {
+  align-items: flex-end !important;
+}
+.active {
+  width: 20px !important;
+  height: 20px !important;
+  background-color: yellow !important;
+}
+.active2 {
+  background-color: yellow !important;
+}

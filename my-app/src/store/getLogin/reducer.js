@@ -1,11 +1,17 @@
 import { createReducer } from "@reduxjs/toolkit";
 
-export default createReducer([], {
+const initialState = {
+  gameName: "",
+  playerID: 0,
+  playerName: "",
+};
+
+export default createReducer(initialState, {
   GET_LOGIN: (_, action) => {
     return {
-      data: action.payload,
-      loading: false,
-      error: false,
+      gameName: action.payload.gameName,
+      playerID: action.payload.playerID,
+      playerName: action.payload.playerName,
     };
   },
 });

@@ -1,11 +1,17 @@
 import { createReducer } from "@reduxjs/toolkit";
 
-export default createReducer([], {
+const initialState = {
+  roundId: 0,
+  dealerName: "",
+  currentBalance: 0,
+};
+
+export default createReducer(initialState, {
   JOIN_FUNC: (_, action) => {
     return {
-      data: action.payload,
-      loading: false,
-      error: false,
+      roundId: action.payload.roundId,
+      dealerName: action.payload.dealerName,
+      currentBalance: action.payload.currentBalance,
     };
   },
 });

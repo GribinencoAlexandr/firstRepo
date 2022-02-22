@@ -20,7 +20,6 @@ function Logo(props) {
 
   const toggleAnim = () => {
     setAnim4(!anim);
-    console.log(anim);
   };
   return (
     <svg viewBox="0 0 841.9 595.3">

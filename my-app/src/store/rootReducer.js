@@ -6,6 +6,6 @@ import joinFuncReducer from "./joinFunc/reducer";
 export default combineReducers({
   token: tokenReducer,
   login: loginReducer,
-  statistic: statisticReducer,
   playerInfo: joinFuncReducer,
+  statistic: statisticReducer,
 });
