@@ -58,7 +58,7 @@ const Slider = () => {
             active={isActive === "round5"}
           >
             <tspan x="-9.375" y="0">
-              500
+              {circleData.round5.dataNum}
             </tspan>
           </ReactText>
         </g>
@@ -80,7 +80,7 @@ const Slider = () => {
             active={isActive === "round4"}
           >
             <tspan x="-9.375" y="0">
-              400
+              {circleData.round4.dataNum}
             </tspan>
           </ReactText>
         </g>
@@ -102,7 +102,7 @@ const Slider = () => {
             transform="translate(88 15)"
           >
             <tspan x="-9.375" y="0">
-              300
+              {circleData.round3.dataNum}
             </tspan>
           </ReactText>
         </g>
@@ -122,7 +122,7 @@ const Slider = () => {
             letter-spacing=".01em"
           >
             <tspan x="-9.375" y="0">
-              200
+              {circleData.round2.dataNum}
             </tspan>
           </ReactText>
         </g>
@@ -143,7 +143,7 @@ const Slider = () => {
             transform="translate(4 15)"
           >
             <tspan x="-9.375" y="0">
-              100
+              {circleData.round1.dataNum}
             </tspan>
           </ReactText>
         </g>
