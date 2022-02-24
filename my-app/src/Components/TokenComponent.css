@@ -38,3 +38,10 @@
 .active2 {
   background-color: yellow !important;
 }
+.statBars {
+  width: 380px;
+}
+.roulleteS {
+  width: 239px;
+  height: 239w;
+}

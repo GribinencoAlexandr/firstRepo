@@ -12,9 +12,10 @@ import {
   namesData3,
   colorsData3,
   numberColors,
+  numberRoulleteColors,
 } from "../config";
 import Slider from "../svgComponents/slider";
-
+import Roullete from "../svgComponents/roullete.js";
 const Wrapper = styled.div`
   height: 100vh;
   display: flex;
@@ -30,11 +31,11 @@ const Container = styled.div`
   width: calc(100% - 60px);
   height: 91vh;
   background: rgba(48, 49, 67, 0.95);
+  display: flex;
 `;
 const HotNumConteiner = styled.div`
   display: flex;
   flex-direction: column;
-  width: 30%;
   align-items: center;
   margin: 11px;
 `;
@@ -42,14 +43,13 @@ const HotNumConteiner = styled.div`
 const ColdNumConteiner = styled.div`
   display: flex;
   flex-direction: column;
-  width: 30%;
+
   align-items: center;
   margin: 11px;
 `;
 const StatBar = styled.div`
   position: relative;
   height: 30px;
-  width: 37%;
   background-color: #0d0d0d80;
   opacity: 1;
   color: antiquewhite;
@@ -63,7 +63,7 @@ const StatBar = styled.div`
 const HotNumBar = styled.div`
   position: relative;
   height: 30px;
-  width: 100%;
+  width: 95%;
   background-color: #0d0d0d80;
   border: 1px solid #ff33334d;
   border-radius: 6px;
@@ -74,7 +74,7 @@ const HotNumBar = styled.div`
 const ColdNumBar = styled.div`
   position: relative;
   height: 30px;
-  width: 100%;
+  width: 95%;
   background-color: #0d0d0d80;
   border: 1px solid #009ad44d;
   border-radius: 6px;
@@ -98,13 +98,13 @@ const ColdNumTitle = styled.span`
 `;
 const HotNumItem = styled.div`
   color: ${(props) => props.color};
-  width: 34px;
+  width: 48px;
   border-left: 1px solid #ff33334d;
   text-align: center;
 `;
 const ColdNumItem = styled.div`
   color: ${(props) => props.color};
-  width: 34px;
+  width: 48px;
   border-left: 1px solid #009ad44d;
   text-align: center;
 `;
@@ -179,107 +179,115 @@ const TokenComponent = () => {
   return (
     <Wrapper>
       <Header />
+
       <Container>
-        <StatBar>
-          {Object.keys(data1).map((item) => {
-            return (
-              <BarItems>
-                <div className="barItemName">
-                  <SpanNameFirst color={colorsData1[item]}>
-                    {namesData1[item]} {data1[item]}%
-                  </SpanNameFirst>
-                </div>
-                <div className="barItemProgressbar">
-                  <ProgressBar
-                    value={data1[item]}
-                    color={colorsData1[item]}
-                  ></ProgressBar>
-                </div>
-              </BarItems>
-            );
-          })}
-        </StatBar>
-
-        <StatBar>
-          <BarNames>
-            {Object.keys(data2).map((item) => {
+        <div className="statBars">
+          <StatBar>
+            {Object.keys(data1).map((item) => {
               return (
-                <SpanNameFirst2 color={colorsData2[item]} className="someClass">
-                  {namesData2[item]} {data2[item]}%
-                </SpanNameFirst2>
+                <BarItems>
+                  <div className="barItemName">
+                    <SpanNameFirst color={colorsData1[item]}>
+                      {namesData1[item]} {data1[item]}%
+                    </SpanNameFirst>
+                  </div>
+                  <div className="barItemProgressbar">
+                    <ProgressBar
+                      value={data1[item]}
+                      color={colorsData1[item]}
+                    ></ProgressBar>
+                  </div>
+                </BarItems>
               );
             })}
-          </BarNames>
-          <StatBarConteiner>
-            {Object.keys(data2).map((item) => {
-              return (
-                <BarItemsFirst
-                  color={colorsData2[item]}
-                  width={data2[item]}
-                ></BarItemsFirst>
-              );
-            })}
-          </StatBarConteiner>
-        </StatBar>
-
-        <StatBar>
-          <BarNames>
-            {Object.keys(data3).map((item) => {
-              return (
-                <SpanNameFirst2 color={colorsData3[item]} className="someClass">
-                  {namesData3[item]} {data3[item]}%
-                </SpanNameFirst2>
-              );
-            })}
-          </BarNames>
-          <StatBarConteiner>
-            {Object.keys(data3).map((item) => {
-              return (
-                <BarItemsFirst
-                  color={colorsData3[item]}
-                  width={data3[item]}
-                ></BarItemsFirst>
-              );
-            })}
-          </StatBarConteiner>
-        </StatBar>
-
-        <HotNumConteiner>
-          <HotNumTitle>HOT NUMBERS</HotNumTitle>
-          <HotNumBar>
-            <IconContainer>
-              <HotNumLogo />
-            </IconContainer>
-            <HotNumbers>
-              {Object.keys(hotNumData).map((item) => {
+          </StatBar>
+          <StatBar>
+            <BarNames>
+              {Object.keys(data2).map((item) => {
                 return (
-                  <HotNumItem color={numberColors[hotNumData[item]]}>
-                    {hotNumData[item]}
-                  </HotNumItem>
+                  <SpanNameFirst2
+                    color={colorsData2[item]}
+                    className="someClass"
+                  >
+                    {namesData2[item]} {data2[item]}%
+                  </SpanNameFirst2>
                 );
               })}
-            </HotNumbers>
-          </HotNumBar>
-        </HotNumConteiner>
-
-        <ColdNumConteiner>
-          <ColdNumTitle>COLD NUMBERS</ColdNumTitle>
-          <ColdNumBar>
-            <IconContainer2>
-              <ColdNumLogo />
-            </IconContainer2>
-            <HotNumbers>
-              {Object.keys(coldNumData).map((item) => {
+            </BarNames>
+            <StatBarConteiner>
+              {Object.keys(data2).map((item) => {
                 return (
-                  <ColdNumItem color={numberColors[coldNumData[item]]}>
-                    {coldNumData[item]}
-                  </ColdNumItem>
+                  <BarItemsFirst
+                    color={colorsData2[item]}
+                    width={data2[item]}
+                  ></BarItemsFirst>
                 );
               })}
-            </HotNumbers>
-          </ColdNumBar>
-        </ColdNumConteiner>
-        <Slider />
+            </StatBarConteiner>
+          </StatBar>
+          <StatBar>
+            <BarNames>
+              {Object.keys(data3).map((item) => {
+                return (
+                  <SpanNameFirst2
+                    color={colorsData3[item]}
+                    className="someClass"
+                  >
+                    {namesData3[item]} {data3[item]}%
+                  </SpanNameFirst2>
+                );
+              })}
+            </BarNames>
+            <StatBarConteiner>
+              {Object.keys(data3).map((item) => {
+                return (
+                  <BarItemsFirst
+                    color={colorsData3[item]}
+                    width={data3[item]}
+                  ></BarItemsFirst>
+                );
+              })}
+            </StatBarConteiner>
+          </StatBar>
+          <HotNumConteiner>
+            <HotNumTitle>HOT NUMBERS</HotNumTitle>
+            <HotNumBar>
+              <IconContainer>
+                <HotNumLogo />
+              </IconContainer>
+              <HotNumbers>
+                {Object.keys(hotNumData).map((item) => {
+                  return (
+                    <HotNumItem color={numberColors[hotNumData[item]]}>
+                      {hotNumData[item]}
+                    </HotNumItem>
+                  );
+                })}
+              </HotNumbers>
+            </HotNumBar>
+          </HotNumConteiner>
+          <ColdNumConteiner>
+            <ColdNumTitle>COLD NUMBERS</ColdNumTitle>
+            <ColdNumBar>
+              <IconContainer2>
+                <ColdNumLogo />
+              </IconContainer2>
+              <HotNumbers>
+                {Object.keys(coldNumData).map((item) => {
+                  return (
+                    <ColdNumItem color={numberColors[coldNumData[item]]}>
+                      {coldNumData[item]}
+                    </ColdNumItem>
+                  );
+                })}
+              </HotNumbers>
+            </ColdNumBar>
+          </ColdNumConteiner>
+          <Slider />
+        </div>
+        <div className="roulleteS">
+          <Roullete />
+        </div>
       </Container>
     </Wrapper>
   );
