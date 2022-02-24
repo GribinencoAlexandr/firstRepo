@@ -9,6 +9,7 @@ export const statisticsMiddleware = (store) => (next) => (action) => {
 
       let dataStatistics = dataStat(token, action.payload);
       getStatistic(getStatisticUrl, dataStatistics).then((response) => {
+        console.log("fa", response);
         store.dispatch(getStatisticSuccessAC(response));
       });
       break;
