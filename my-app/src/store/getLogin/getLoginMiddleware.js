@@ -13,6 +13,7 @@ export const loginMiddleware = (store) => (next) => (action) => {
       setInterval(
         () =>
           joinFunc(joinFuncUrl, dataJoin).then((response) => {
+            console.log(response);
             store.dispatch(joinFuncAC(response));
           }),
         1000

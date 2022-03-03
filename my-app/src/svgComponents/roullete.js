@@ -25,8 +25,11 @@ const ReactG = styled.g`
 `;
 const ReactPath = styled.path`
   fill: ${(props) => props.color};
-  transform: scale(${({ maxNum, percent }) => (percent / maxNum) * 0.8});
-  transition: all 0.6s ease-in 0s;
+  transform: scale(
+    ${({ maxNum, percent }) =>
+      percent === undefined ? 0 : (percent / maxNum) * 0.8}
+  );
+  transition: all 0.6s ease-in 1s;
   transform-box: fill-box;
   transform-origin: center bottom;
 `;
