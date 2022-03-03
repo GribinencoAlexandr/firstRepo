@@ -8,6 +8,7 @@ export const statisticsMiddleware = (store) => (next) => (action) => {
       const { token } = store.getState();
 
       let dataStatistics = dataStat(token, action.payload);
+      console.log(action.payload);
       getStatistic(getStatisticUrl, dataStatistics).then((response) => {
         console.log("fa", response);
         store.dispatch(getStatisticSuccessAC(response));

@@ -19,7 +19,8 @@ const initialState = {
   },
   hotNumData: [],
   coldNumData: [],
-  wheelStatistic: [0],
+  wheelStatistic: [],
+  roundsNumber: 100,
 };
 
 export default createReducer(initialState, {
@@ -48,6 +49,7 @@ export default createReducer(initialState, {
       hotNumData: action.payload.hotNumbers,
       coldNumData: action.payload.coldNumbers,
       wheelStatistic: action.payload.wheelStatistic,
+      roundsNumber: action.payload.roundsNumber,
     };
   },
 });

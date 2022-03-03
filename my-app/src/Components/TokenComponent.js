@@ -12,21 +12,19 @@ import {
   namesData3,
   colorsData3,
   numberColors,
-  numberRoulleteColors,
 } from "../config";
+
 import Slider from "../svgComponents/slider";
 import Roullete from "../svgComponents/roullete.js";
+import Header from "./Header/Header";
+
 const Wrapper = styled.div`
   height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
 `;
-const Header = styled.div`
-  width: 100%;
-  height: 40px;
-  background: darkgreen;
-`;
+
 const Container = styled.div`
   width: calc(100% - 60px);
   height: 91vh;
@@ -164,18 +162,25 @@ const SpanNameFirst2 = styled.div`
   padding-right: 90px;
   color: ${(props) => props.color};
 `;
+const NumRounds = styled.div`
+  color: #e6e6e6;
+  font-size: 14px;
+  line-height: 14.4px;
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+`;
 
 const TokenComponent = () => {
-  const { data1, data2, data3, hotNumData, coldNumData } = useSelector(
-    (state) => ({
+  const { data1, data2, data3, hotNumData, coldNumData, roundsNumber } =
+    useSelector((state) => ({
       data1: state.statistic.data1,
       data2: state.statistic.data2,
       data3: state.statistic.data3,
       hotNumData: state.statistic.hotNumData,
       coldNumData: state.statistic.coldNumData,
-    })
-  );
-
+      roundsNumber: state.statistic.roundsNumber,
+    }));
   return (
     <Wrapper>
       <Header />
@@ -287,6 +292,7 @@ const TokenComponent = () => {
         </div>
         <div className="roulleteS">
           <Roullete />
+          <NumRounds>LAST {roundsNumber} ROUNDS</NumRounds>
         </div>
       </Container>
     </Wrapper>

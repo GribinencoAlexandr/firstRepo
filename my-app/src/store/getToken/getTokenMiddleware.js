@@ -16,6 +16,7 @@ export const tokenMiddleware = (store) => (next) => (action) => {
         store.dispatch(getTokenACSuccess(result));
         let data = dataLogin(result);
         getLogin(getLoginUrl, data).then((response) => {
+          console.log(response);
           store.dispatch(getLoginAC(response));
         });
       });
