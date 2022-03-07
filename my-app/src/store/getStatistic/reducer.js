@@ -21,14 +21,16 @@ const initialState = {
   coldNumData: [],
   wheelStatistic: [],
   roundsNumber: 100,
+  statTab: false,
 };
 
 export default createReducer(initialState, {
   GET_STATISTIC: () => {
     return initialState;
   },
-  GET_STATISTIC_SUCCESS: (_, action) => {
+  GET_STATISTIC_SUCCESS: (state, action) => {
     return {
+      ...state,
       data1: {
         racetrackTierPercent: action.payload.racetrackTierPercent,
         racetrackOrphelinsPercent: action.payload.racetrackOrphelinsPercent,
@@ -51,5 +53,8 @@ export default createReducer(initialState, {
       wheelStatistic: action.payload.wheelStatistic,
       roundsNumber: action.payload.roundsNumber,
     };
+  },
+  STAT_TAB_VISIBILITY: (state, action) => {
+    return { ...state, statTab: action.payload };
   },
 });

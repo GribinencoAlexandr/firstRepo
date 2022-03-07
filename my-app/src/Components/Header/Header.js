@@ -2,6 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { numberColors } from "../../config";
+import Timer from "./TimerComponent/Timer";
 const HeaderWrapper = styled.div`
   width: 100%;
   height: 40px;
@@ -20,6 +21,7 @@ const HeaderContainer = styled.div`
   font-size: 12px;
 `;
 const YourBet = styled.div`
+  display: flex;
   font-size: 13px;
   font-weight: 600;
 `;
@@ -35,22 +37,14 @@ const GameStatItem2 = styled.div`
   color: #b3b3b3;
 `;
 const Header = () => {
-  const {
-    roundId,
-    gameName,
-    currentBalance,
-    // miliSecondsLeftToWait,
-    roundResult,
-    roundStatus,
-  } = useSelector((state) => ({
-    roundId: state.playerInfo.roundId,
-    gameName: state.login.gameName,
-    currentBalance: state.playerInfo.currentBalance,
-    miliSecondsLeftToWait: state.playerInfo.miliSecondsLeftToWait,
-    roundResult: state.playerInfo.roundResult,
-    roundStatus: state.playerInfo.roundStatus,
-  }));
-  console.log("sf", roundStatus);
+  const { roundId, gameName, currentBalance, roundResult, roundStatus } =
+    useSelector((state) => ({
+      roundId: state.playerInfo.roundId,
+      gameName: state.login.gameName,
+      currentBalance: state.playerInfo.currentBalance,
+      roundResult: state.playerInfo.roundResult,
+      roundStatus: state.playerInfo.roundStatus,
+    }));
 
   const statusData = {
     1: { name: "PLACE YOUR BETS", color: "#00b233" },
@@ -62,9 +56,13 @@ const Header = () => {
       }`,
       color: `${numberColors[roundResult] === "#E6E6E6" ? "black" : "#FF3333"}`,
     },
-    0: { name: "PLACE YOUR BETS", color: "#00b233" },
+    0: {
+      name: `${roundResult} ${
+        numberColors[roundResult] === "#E6E6E6" ? "BLACK" : "RED"
+      }`,
+      color: `${numberColors[roundResult] === "#E6E6E6" ? "black" : "#FF3333"}`,
+    },
   };
-  //   console.log(numberColors[roundResult]);
   return (
     <HeaderWrapper bkgColor={statusData[roundStatus].color}>
       <HeaderContainer>
@@ -73,10 +71,8 @@ const Header = () => {
           <GameStatItem2>{gameName} 1–10000 IDR</GameStatItem2>
         </GameStat1>
         <YourBet>
-          {statusData[roundStatus].name}{" "}
-          {/* {(miliSecondsLeftToWait / 1000).toFixed(0) > 0
-            ? (miliSecondsLeftToWait / 1000).toFixed(0)
-            : 0} */}
+          {statusData[roundStatus].name} {""}
+          {roundStatus > 1 ? "" : roundStatus === 0 ? "" : <Timer />}
         </YourBet>
         <GameStat2>
           <GameStatItem1>#{roundId}</GameStatItem1>

@@ -8,6 +8,7 @@ import {
 import { getLoginAC } from "../getLogin/actions";
 import { getToken } from "../../Services/tokenThunks";
 import { getTokenACSuccess } from "./actions";
+import { loadingBarAC } from "../appData/actions";
 
 export const tokenMiddleware = (store) => (next) => (action) => {
   switch (action.type) {
@@ -21,7 +22,9 @@ export const tokenMiddleware = (store) => (next) => (action) => {
         });
       });
       break;
-
+    case "GET_TOKEN_SUCCESS":
+      store.dispatch(loadingBarAC(10));
+      break;
     default:
   }
   next(action);

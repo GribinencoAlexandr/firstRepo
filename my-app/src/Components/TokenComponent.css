@@ -47,3 +47,22 @@
   margin-top: 10px;
   margin-left: 15px;
 }
+.closeBtn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+.openBtn {
+  position: absolute;
+  bottom: 21px;
+  right: 31px;
+  width: 46px;
+  height: 46px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  color: rgb(255, 255, 255);
+  background: rgb(26, 26, 26);
+}
+.openBtn button {
+  border-radius: 46%;
+}
