@@ -1,5 +1,6 @@
 import { dataJoinFunc, joinFuncUrl } from "../../config";
 import { joinFunc } from "../../Services/joinThunks";
+import { loadingBarAC } from "../appData/actions";
 
 import { joinFuncAC } from "../joinFunc/actions";
 
@@ -18,7 +19,7 @@ export const loginMiddleware = (store) => (next) => (action) => {
           }),
         1000
       );
-
+      store.dispatch(loadingBarAC(95));
       break;
     default:
   }

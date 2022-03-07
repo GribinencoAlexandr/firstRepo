@@ -1,0 +1,8 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" width="46" height="46">
+  <g style="fill:rgba(178,178,178,.9);stroke:rgba(255,255,255,.3);stroke-linejoin:round">
+    <circle cx="23" cy="23" r="23" style="stroke:none" stroke="none"/>
+    <circle cx="23" cy="23" r="22.5" style="fill:none"/>
+  </g>
+  <path d="m3071 781.453-6.544 6.547-1.456-1.458 6.543-6.543-6.543-6.543 1.455-1.453 6.543 6.543 6.543-6.543 1.453 1.453-6.542 6.544 6.543 6.543-1.453 1.457Z" transform="translate(-3047.5 -756)" style="fill:#1a1a1a"/>
+</svg>

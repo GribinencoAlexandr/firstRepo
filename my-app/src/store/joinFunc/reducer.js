@@ -16,6 +16,7 @@ export default createReducer(initialState, {
       dealerName: action.payload.dealerName,
       currentBalance: action.payload.currentBalance,
       miliSecondsLeftToWait: action.payload.miliSecondsLeftToWait,
+      miliSecondsToWait: action.payload.miliSecondsToWait,
       roundResult: action.payload.roundResult,
       roundStatus: action.payload.roundStatus,
     };

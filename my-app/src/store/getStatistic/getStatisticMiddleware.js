@@ -1,5 +1,6 @@
 import { dataStat, getStatisticUrl } from "../../config";
 import { getStatistic } from "../../Services/statisticsThunk";
+import { loadingBarAC } from "../appData/actions";
 import { getStatisticSuccessAC } from "./actions";
 
 export const statisticsMiddleware = (store) => (next) => (action) => {
@@ -8,11 +9,14 @@ export const statisticsMiddleware = (store) => (next) => (action) => {
       const { token } = store.getState();
 
       let dataStatistics = dataStat(token, action.payload);
-      console.log(action.payload);
       getStatistic(getStatisticUrl, dataStatistics).then((response) => {
         console.log("fa", response);
         store.dispatch(getStatisticSuccessAC(response));
       });
+      store.dispatch(loadingBarAC(100));
+      break;
+    case "STAT_TAB_VISIBILITY":
+      console.log("afasf", action.payload);
       break;
     default:
   }
