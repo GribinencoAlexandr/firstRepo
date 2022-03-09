@@ -4,6 +4,15 @@ import styled from "styled-components";
 import { ReactComponent as HotNumLogo } from "../svgComponents/HotNum.svg";
 import { ReactComponent as ColdNumLogo } from "../svgComponents/ColdNum.svg";
 import { ReactComponent as CloseButton } from "../svgComponents/Button.svg";
+import { ReactComponent as MenuButton } from "../svgComponents/Menu.svg";
+import { ReactComponent as LobbyIcon } from "../svgComponents/MenuIcons/LobbyIcon.svg";
+import { ReactComponent as HistoryIcon } from "../svgComponents/MenuIcons/HistoryIcon.svg";
+import { ReactComponent as SettingsIcon } from "../svgComponents/MenuIcons/SettingsIcon.svg";
+import { ReactComponent as GameRulesIcon } from "../svgComponents/MenuIcons/GameRulesIcon.svg";
+import { ReactComponent as LimitsIcon } from "../svgComponents/MenuIcons/LimitsIcon.svg";
+import { ReactComponent as InfoIcon } from "../svgComponents/MenuIcons/InfoIcon.svg";
+import { ReactComponent as StatisticIcon } from "../svgComponents/MenuIcons/StatisticIcon.svg";
+import { ReactComponent as FavoriteIcon } from "../svgComponents/MenuIcons/FavoriteIcon.svg";
 import "./TokenComponent.css";
 import {
   colorsData1,
@@ -19,6 +28,7 @@ import Slider from "../svgComponents/slider";
 import Roullete from "../svgComponents/roullete.js";
 import Header from "./Header/Header";
 import { statTabVisibilityAC } from "../store/getStatistic/actions";
+import { menuTabAC } from "../store/appData/actions";
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -48,7 +58,6 @@ const HotNumConteiner = styled.div`
 const ColdNumConteiner = styled.div`
   display: flex;
   flex-direction: column;
-
   align-items: center;
   margin: 11px;
 `;
@@ -181,6 +190,74 @@ const StatSVG = styled.svg`
   width: 100%;
   padding: 20%;
 `;
+const MenuButtonContainer = styled.div`
+  display: ${({ menuClose }) => (menuClose ? "none" : "block")};
+  position: absolute;
+  bottom: 21px;
+  right: 30px;
+  width: 46px;
+  height: 46px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  color: rgb(255, 255, 255);
+  background: rgb(26, 26, 26);
+`;
+const MenuMainContainer = styled.div`
+  height: calc(100% - 40px);
+  top: 40px;
+  transform: translateX(${({ menuClose }) => (menuClose ? "0" : "100")}%);
+  width: 35%;
+  background: linear-gradient(
+    45deg,
+    rgb(62, 59, 78) 0%,
+    rgb(60, 66, 80) 50%,
+    rgb(62, 59, 78) 100%
+  );
+  box-shadow: rgb(0 0 0 / 50%) 2px 0px 7px;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  -webkit-box-pack: start;
+  justify-content: flex-start;
+  padding-top: 8px;
+  transition: transform 500ms ease 0s;
+`;
+const MenuItem = styled.button`
+  display: flex;
+  flex-flow: column nowrap;
+  text-decoration: none;
+  outline: none;
+  font-size: 14px;
+  width: 100%;
+  padding: 9px 9px 9px 20px;
+  color: rgb(230, 230, 230);
+  background: transparent;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  border-image: initial;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+`;
+const CloseButtonContainer = styled.div`
+  display: ${({ closeStat, menuClose }) =>
+    closeStat ? "block" : menuClose ? "block" : "none"};
+  position: absolute;
+  bottom: 20px;
+  right: 30px;
+`;
+const MenuItemConteiner = styled.div`
+  display: flex;
+`;
+const MenuItemIcon = styled.div`
+  width: 25px;
+  margin-right: 18px;
+`;
+const MenuItemTitle = styled.div`
+  align-items: center;
+  vertical-align: middle;
+  font-weight: 500;
+  font-size: 14px;
+`;
 const TokenComponent = () => {
   const {
     data1,
@@ -190,6 +267,7 @@ const TokenComponent = () => {
     coldNumData,
     roundsNumber,
     statTab,
+    menuTab,
   } = useSelector((state) => ({
     data1: state.statistic.data1,
     data2: state.statistic.data2,
@@ -198,24 +276,102 @@ const TokenComponent = () => {
     coldNumData: state.statistic.coldNumData,
     roundsNumber: state.statistic.roundsNumber,
     statTab: state.statistic.statTab,
+    menuTab: state.appData.menuTab,
   }));
   const dispatch = useDispatch();
-  const handleStat = (active) => {
-    dispatch(statTabVisibilityAC(active));
-    console.log(active);
+  const handleStat = (active, active2) => {
+    dispatch(statTabVisibilityAC(active.statistic));
+    dispatch(menuTabAC(active.menu));
+    console.log(active.statistic);
   };
   return (
     <Wrapper>
       <Header />
       <MainContainer>
         <div className="openBtn">
-          <StatSVG onClick={() => handleStat(true)} viewBox="0 0 24 24">
+          <StatSVG
+            onClick={() => handleStat({ statistic: true })}
+            viewBox="0 0 24 24"
+          >
             <path
               d="M0 12a12 12 0 1 1 12 12A12 12 0 0 1 0 12zm12 10.154a10.154 10.154 0 0 0 9.355-14.1L12 12l8.687 1.2-.563 2.1L12 12l8.324 4.927-1.469 1.9L12 12l3.252 4.3-1.157.669L12 12l2.177 8.5-2.158.274L12 12l1.2-8.687 2.1.563L12 12l4.467-7.546 1.72 1.331L12 12l8.093-6.126A10.152 10.152 0 0 0 2.645 15.947L12 12l-6.01 1.541-.194-1.527L12 12l-8.687-1.2.563-2.1L12 12 8.748 7.7l1.157-.668L12 12l-1.2 8.687-2.1-.563L12 12l-4.468 7.547-1.72-1.332L12 12l-8.093 6.126A10.145 10.145 0 0 0 12 22.153zM12 12zm0 0zm0 0zm0 0zm0 0zm0 0zm0 0zm0 0zm0 0zM9.823 3.506l2.158-.274L12 12zM3.676 7.073l1.469-1.9L12 12zm14.334 3.388.194 1.526L12 12z"
               fill="#fff"
             />
           </StatSVG>
         </div>
+        <MenuButtonContainer menuClose={menuTab}>
+          <div className="menuButtonPadding">
+            <MenuButton onClick={() => handleStat({ menu: true })} />
+          </div>
+        </MenuButtonContainer>
+        <MenuMainContainer menuClose={menuTab}>
+          <div className="scrollMenu">
+            <MenuItem>
+              <MenuItemConteiner>
+                <MenuItemIcon>
+                  <LobbyIcon />
+                </MenuItemIcon>
+                <MenuItemTitle>Lobby</MenuItemTitle>
+              </MenuItemConteiner>
+            </MenuItem>
+            <MenuItem>
+              <MenuItemConteiner>
+                <MenuItemIcon>
+                  <HistoryIcon />
+                </MenuItemIcon>
+                <MenuItemTitle>History</MenuItemTitle>
+              </MenuItemConteiner>
+            </MenuItem>
+            <MenuItem>
+              <MenuItemConteiner>
+                <MenuItemIcon>
+                  <SettingsIcon />
+                </MenuItemIcon>
+                <MenuItemTitle>Settings</MenuItemTitle>
+              </MenuItemConteiner>
+            </MenuItem>
+            <MenuItem>
+              <MenuItemConteiner>
+                <MenuItemIcon>
+                  <GameRulesIcon />
+                </MenuItemIcon>
+                <MenuItemTitle>Game Rules</MenuItemTitle>
+              </MenuItemConteiner>
+            </MenuItem>
+            <MenuItem>
+              <MenuItemConteiner>
+                <MenuItemIcon>
+                  <LimitsIcon />
+                </MenuItemIcon>
+                <MenuItemTitle>Limits</MenuItemTitle>
+              </MenuItemConteiner>
+            </MenuItem>
+            <MenuItem>
+              <MenuItemConteiner>
+                <MenuItemIcon>
+                  <InfoIcon />
+                </MenuItemIcon>
+                <MenuItemTitle>Info</MenuItemTitle>
+              </MenuItemConteiner>
+            </MenuItem>
+            <MenuItem onClick={() => handleStat({ statistic: true })}>
+              <MenuItemConteiner>
+                <MenuItemIcon>
+                  <StatisticIcon />
+                </MenuItemIcon>
+                <MenuItemTitle>Statistics</MenuItemTitle>
+              </MenuItemConteiner>
+            </MenuItem>
+            <MenuItem>
+              <MenuItemConteiner>
+                <MenuItemIcon>
+                  <FavoriteIcon />
+                </MenuItemIcon>
+                <MenuItemTitle>Favorite Bets</MenuItemTitle>
+              </MenuItemConteiner>
+            </MenuItem>
+          </div>
+        </MenuMainContainer>
         <Container stat={statTab}>
           <div className="statBars">
             <StatBar>
@@ -325,10 +481,12 @@ const TokenComponent = () => {
             <Roullete />
             <NumRounds>LAST {roundsNumber} ROUNDS</NumRounds>
           </div>
-          <div className="closeBtn">
-            <CloseButton onClick={() => handleStat(false)} />
-          </div>
         </Container>
+        <CloseButtonContainer closeStat={statTab} menuClose={menuTab}>
+          <CloseButton
+            onClick={() => handleStat({ statistic: false }, { menu: false })}
+          />
+        </CloseButtonContainer>
       </MainContainer>
     </Wrapper>
   );

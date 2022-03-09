@@ -14,7 +14,7 @@ const HeaderWrapper = styled.div`
 `;
 const HeaderContainer = styled.div`
   color: #ffffff;
-  margin: 0 10px;
+  margin: 2px 10px;
   display: flex;
   justify-content: space-between;
   letter-spacing: 0.12px;
@@ -50,6 +50,12 @@ const Header = () => {
     1: { name: "PLACE YOUR BETS", color: "#00b233" },
     2: { name: "LAST BETS", color: "#B25F00" },
     3: { name: "NO MORE BETS", color: "#646464" },
+    4: {
+      name: `${roundResult} ${
+        numberColors[roundResult] === "#E6E6E6" ? "BLACK" : "RED"
+      }`,
+      color: `${numberColors[roundResult] === "#E6E6E6" ? "black" : "#FF3333"}`,
+    },
     5: {
       name: `${roundResult} ${
         numberColors[roundResult] === "#E6E6E6" ? "BLACK" : "RED"
@@ -58,9 +64,19 @@ const Header = () => {
     },
     0: {
       name: `${roundResult} ${
-        numberColors[roundResult] === "#E6E6E6" ? "BLACK" : "RED"
+        numberColors[roundResult] === "#E6E6E6"
+          ? "BLACK"
+          : numberColors[roundResult] === "#00B233"
+          ? "ZERO"
+          : "RED"
       }`,
-      color: `${numberColors[roundResult] === "#E6E6E6" ? "black" : "#FF3333"}`,
+      color: `${
+        numberColors[roundResult] === "#E6E6E6"
+          ? "black"
+          : numberColors[roundResult] === "#00B233"
+          ? "#00b233"
+          : "#FF3333"
+      }`,
     },
   };
   return (

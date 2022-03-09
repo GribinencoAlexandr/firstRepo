@@ -15,9 +15,7 @@ export const statisticsMiddleware = (store) => (next) => (action) => {
       });
       store.dispatch(loadingBarAC(100));
       break;
-    case "STAT_TAB_VISIBILITY":
-      console.log("afasf", action.payload);
-      break;
+
     default:
   }
   next(action);

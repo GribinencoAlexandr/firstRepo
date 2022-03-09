@@ -21,7 +21,7 @@ const initialState = {
   coldNumData: [],
   wheelStatistic: [],
   roundsNumber: 100,
-  statTab: false,
+  statTab: "",
 };
 
 export default createReducer(initialState, {
