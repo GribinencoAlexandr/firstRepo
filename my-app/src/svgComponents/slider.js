@@ -28,13 +28,13 @@ const Slider = () => {
     round5: { width: 355, dataNum: 500 },
   };
 
-  const handleClick = (active) => {
-    setIsActive(active);
-    let inse = Object.keys(circleData).indexOf(active);
+  const changeRoundStat = (round) => {
+    setIsActive(round);
+    let inse = Object.keys(circleData).indexOf(round);
     console.log(inse);
     setIdx(inse);
-    setYellowWidth(circleData[active]);
-    dispatch(getStatisticAC(circleData[active].dataNum));
+    setYellowWidth(circleData[round]);
+    dispatch(getStatisticAC(circleData[round].dataNum));
   };
   return (
     <svg viewBox="-10 0 390 57">
@@ -50,7 +50,7 @@ const Slider = () => {
             activeColor={isActive === "round5"}
             cy="6"
             transform="translate(355 23)"
-            onClick={() => handleClick("round5")}
+            onClick={() => changeRoundStat("round5")}
           />
           <ReactText
             font-family="Roboto-Regular,Roboto"
@@ -71,7 +71,7 @@ const Slider = () => {
             activeColor={idx > 3}
             r="4"
             transform="translate(250 23)"
-            onClick={() => handleClick("round4")}
+            onClick={() => changeRoundStat("round4")}
           />
           <ReactText
             fill="#e6e6e6"
@@ -94,7 +94,7 @@ const Slider = () => {
             active={isActive === "round3"}
             activeColor={idx > 2}
             transform="translate(170 23)"
-            onClick={() => handleClick("round3")}
+            onClick={() => changeRoundStat("round3")}
           />
           <ReactText
             font-family="Roboto-Regular,Roboto"
@@ -114,7 +114,7 @@ const Slider = () => {
             active={isActive === "round2"}
             activeColor={idx > 1}
             transform="translate(80 23)"
-            onClick={() => handleClick("round2")}
+            onClick={() => changeRoundStat("round2")}
           />
           <ReactText
             transform="translate(85 15)"
@@ -135,7 +135,7 @@ const Slider = () => {
             active={isActive === "round1"}
             activeColor={isActive !== "round1"}
             transform="translate(-3 23)"
-            onClick={() => handleClick("round1")}
+            onClick={() => changeRoundStat("round1")}
           />
           <ReactText
             font-family="Roboto-Regular,Roboto"
