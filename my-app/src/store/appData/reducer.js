@@ -3,6 +3,7 @@ import { createReducer } from "@reduxjs/toolkit";
 const initialState = {
   loader: true,
   menuTab: false,
+  gameRuleTab: false,
 };
 
 export default createReducer(initialState, {
@@ -19,6 +20,18 @@ export default createReducer(initialState, {
     return {
       ...state,
       menuTab: action.payload,
+    };
+  },
+  GAME_RULE_TAB: (state, action) => {
+    return {
+      ...state,
+      gameRuleTab: action.payload,
+    };
+  },
+  INFO_TAB: (state, action) => {
+    return {
+      ...state,
+      infoTab: action.payload,
     };
   },
 });

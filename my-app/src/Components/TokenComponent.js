@@ -28,7 +28,8 @@ import Slider from "../svgComponents/slider";
 import Roullete from "../svgComponents/roullete.js";
 import Header from "./Header/Header";
 import { statTabVisibilityAC } from "../store/getStatistic/actions";
-import { menuTabAC } from "../store/appData/actions";
+import { gameRuleTabAC, infoTabAC, menuTabAC } from "../store/appData/actions";
+import GameRules from "./GameRulesComponent/GameRules";
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -40,6 +41,57 @@ const MainContainer = styled.div`
   display: flex;
   justify-content: flex-end;
 `;
+const GameRulesContainer = styled.div`
+  width: 94%;
+  height: 100%;
+  position: absolute;
+  background: linear-gradient(
+    45deg,
+    rgba(62, 59, 78, 0.95) 0%,
+    rgba(60, 66, 80, 0.95) 50%,
+    rgba(62, 59, 78, 0.95) 100%
+  );
+
+  transform: translateX(
+    ${({ gameRuleClose }) => (gameRuleClose ? "0" : "100%")}
+  );
+  transition: transform 500ms ease 0s;
+`;
+const GameRulesTitleContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 20px;
+  width: 100%;
+  text-align: center;
+  color: rgb(230, 230, 229);
+  background-color: rgba(0, 0, 0, 0.3);
+`;
+const GameRulesIconContainer = styled.div`
+  width: 20px;
+  padding: 2px;
+  margin-right: 10px;
+`;
+const GameRulesSpan = styled.span`
+  position: relative;
+  font-size: 14px;
+  text-transform: uppercase;
+  line-height: normal;
+`;
+const GameRulesContent = styled.div`
+  position: relative;
+  width: 100%;
+  height: calc(100% - 40px);
+`;
+const ContentScroll = styled.div`
+  position: relative;
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+  overflow: hidden scroll;
+  height: 100%;
+`;
+
 const Container = styled.div`
   width: calc(100% - 60px);
   height: 91vh;
@@ -239,8 +291,16 @@ const MenuItem = styled.button`
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 `;
 const CloseButtonContainer = styled.div`
-  display: ${({ closeStat, menuClose }) =>
-    closeStat ? "block" : menuClose ? "block" : "none"};
+  display: ${({ closeStat, menuClose, closeGameRule, closeInfo }) =>
+    closeStat
+      ? "block"
+      : menuClose
+      ? "block"
+      : closeGameRule
+      ? "block"
+      : closeInfo
+      ? "block"
+      : "none"};
   position: absolute;
   bottom: 20px;
   right: 30px;
@@ -258,6 +318,74 @@ const MenuItemTitle = styled.div`
   font-weight: 500;
   font-size: 14px;
 `;
+
+const InfoMainContainer = styled.div`
+  width: 94%;
+  height: 100%;
+  position: absolute;
+  transform: translateX(${({ infoClose }) => (infoClose ? "0" : "100%")});
+  transition: transform 500ms ease 0s;
+  background: linear-gradient(
+    45deg,
+    rgba(62, 59, 78, 0.95) 0%,
+    rgba(60, 66, 80, 0.95) 50%,
+    rgba(62, 59, 78, 0.95) 100%
+  );
+`;
+const InfoTitleContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 20px;
+  width: 100%;
+  text-align: center;
+  color: rgb(230, 230, 229);
+  background-color: rgba(0, 0, 0, 0.3);
+`;
+const InfoIconConteiner = styled.div`
+  width: 20px;
+  padding: 2px;
+  margin-right: 10px;
+`;
+const InfoSpan = styled.span`
+  position: relative;
+  font-size: 14px;
+  text-transform: uppercase;
+  line-height: normal;
+`;
+const InfoContentContainer = styled.div`
+  position: relative;
+  width: 100%;
+  height: calc(100% - 40px);
+`;
+const InfoConteiner = styled.div`
+  height: 100%;
+  overflow-y: auto;
+  table {
+    height: 100%;
+    width: 100%;
+    font-size: 14px;
+    border-spacing: 0px;
+  }
+  tr:nth-child(2n) {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+  tr:last-of-type {
+    height: 100%;
+  }
+  td:first-of-type {
+    color: rgb(179, 179, 179);
+    border-right: 1px solid rgb(76, 76, 76);
+  }
+  td {
+    padding: 8px 20px;
+    color: rgb(230, 230, 230);
+    height: 30px;
+    line-height: 0;
+  }
+`;
+
 const TokenComponent = () => {
   const {
     data1,
@@ -268,6 +396,13 @@ const TokenComponent = () => {
     roundsNumber,
     statTab,
     menuTab,
+    gameRuleTab,
+    infoTab,
+    gameName,
+    playerName,
+    roundId,
+    currentBalance,
+    dealerName,
   } = useSelector((state) => ({
     data1: state.statistic.data1,
     data2: state.statistic.data2,
@@ -277,13 +412,22 @@ const TokenComponent = () => {
     roundsNumber: state.statistic.roundsNumber,
     statTab: state.statistic.statTab,
     menuTab: state.appData.menuTab,
+    infoTab: state.appData.infoTab,
+    gameRuleTab: state.appData.gameRuleTab,
+    gameName: state.login.gameName,
+    playerName: state.login.playerName,
+    roundId: state.playerInfo.roundId,
+    currentBalance: state.playerInfo.currentBalance,
+    dealerName: state.playerInfo.dealerName,
   }));
   const dispatch = useDispatch();
   const handleStat = (active, active2) => {
     dispatch(statTabVisibilityAC(active.statistic));
     dispatch(menuTabAC(active.menu));
-    console.log(active.statistic);
+    dispatch(gameRuleTabAC(active.gameRule));
+    dispatch(infoTabAC(active.info));
   };
+  // console.log(useSelector((state) => state));
   return (
     <Wrapper>
       <Header />
@@ -304,6 +448,7 @@ const TokenComponent = () => {
             <MenuButton onClick={() => handleStat({ menu: true })} />
           </div>
         </MenuButtonContainer>
+
         <MenuMainContainer menuClose={menuTab}>
           <div className="scrollMenu">
             <MenuItem>
@@ -335,7 +480,9 @@ const TokenComponent = () => {
                 <MenuItemIcon>
                   <GameRulesIcon />
                 </MenuItemIcon>
-                <MenuItemTitle>Game Rules</MenuItemTitle>
+                <MenuItemTitle onClick={() => handleStat({ gameRule: true })}>
+                  Game Rules
+                </MenuItemTitle>
               </MenuItemConteiner>
             </MenuItem>
             <MenuItem>
@@ -346,7 +493,7 @@ const TokenComponent = () => {
                 <MenuItemTitle>Limits</MenuItemTitle>
               </MenuItemConteiner>
             </MenuItem>
-            <MenuItem>
+            <MenuItem onClick={() => handleStat({ info: true })}>
               <MenuItemConteiner>
                 <MenuItemIcon>
                   <InfoIcon />
@@ -372,6 +519,76 @@ const TokenComponent = () => {
             </MenuItem>
           </div>
         </MenuMainContainer>
+
+        <GameRulesContainer gameRuleClose={gameRuleTab}>
+          <GameRulesTitleContainer>
+            <GameRulesIconContainer>
+              <GameRulesIcon />
+            </GameRulesIconContainer>
+            <GameRulesSpan>GAME RULES</GameRulesSpan>
+          </GameRulesTitleContainer>
+          <GameRulesContent>
+            <ContentScroll>
+              <GameRules />
+            </ContentScroll>
+          </GameRulesContent>
+        </GameRulesContainer>
+
+        <InfoMainContainer infoClose={infoTab}>
+          <InfoTitleContainer>
+            <InfoIconConteiner>
+              <InfoIcon />
+            </InfoIconConteiner>
+            <InfoSpan>info</InfoSpan>
+          </InfoTitleContainer>
+          <InfoContentContainer>
+            <ContentScroll>
+              <InfoConteiner>
+                <table>
+                  <tbody>
+                    <tr>
+                      <td width="22%">Game Name: </td>
+                      <td width="78%">{gameName}</td>
+                    </tr>
+                    <tr>
+                      <td>Account: </td>
+                      <td>{playerName}</td>
+                    </tr>
+                    <tr>
+                      <td>Round ID: </td>
+                      <td>{roundId}</td>
+                    </tr>
+                    <tr>
+                      <td>Balance: </td>
+                      <td>{currentBalance}</td>
+                    </tr>
+                    <tr>
+                      <td>Dealer: </td>
+                      <td>{dealerName}</td>
+                    </tr>
+                    <tr>
+                      <td>Table: </td>
+                      <td>1-10000</td>
+                    </tr>
+                    <tr>
+                      <td>Total Bet: </td>
+                      <td>740270</td>
+                    </tr>
+                    <tr>
+                      <td>Last win: </td>
+                      <td>4340</td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </InfoConteiner>
+            </ContentScroll>
+          </InfoContentContainer>
+        </InfoMainContainer>
+
         <Container stat={statTab}>
           <div className="statBars">
             <StatBar>
@@ -482,7 +699,12 @@ const TokenComponent = () => {
             <NumRounds>LAST {roundsNumber} ROUNDS</NumRounds>
           </div>
         </Container>
-        <CloseButtonContainer closeStat={statTab} menuClose={menuTab}>
+        <CloseButtonContainer
+          closeStat={statTab}
+          menuClose={menuTab}
+          closeGameRule={gameRuleTab}
+          closeInfo={infoTab}
+        >
           <CloseButton
             onClick={() => handleStat({ statistic: false }, { menu: false })}
           />
