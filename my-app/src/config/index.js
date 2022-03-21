@@ -153,3 +153,15 @@ export const numberRoulleteColors = {
   35: { color: "#FF3333", number: 3 },
   36: { color: "rgb(0, 0, 0)", number: 26 },
 };
+export const limitsTypes = {
+  "-1": "Table",
+  1: "Straight Up",
+  2: "Split",
+  3: "Trio",
+  5: "Corner",
+  6: "Six-Line",
+  7: "Column",
+  9: "Outside Half",
+  10: "Inside Total",
+  11: "Outside Total",
+};

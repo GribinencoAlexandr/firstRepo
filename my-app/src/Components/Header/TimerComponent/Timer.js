@@ -18,7 +18,11 @@ const Timer = () => {
   );
   const [secondsToLeft, setSecondsToLeft] = useState(miliSecondsLeftToWait);
   useEffect(() => {
-    if (roundStatus !== 1 || miliSecondsLeftToWait < 0) {
+    if (
+      roundStatus !== 1 ||
+      miliSecondsLeftToWait < 0 ||
+      miliSecondsLeftToWait === 0
+    ) {
       setSecondsToLeft(0);
     } else setSecondsToLeft(miliSecondsLeftToWait);
   }, [roundStatus, miliSecondsLeftToWait]);
