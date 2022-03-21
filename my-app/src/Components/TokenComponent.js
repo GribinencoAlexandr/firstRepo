@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { ReactComponent as HotNumLogo } from "../svgComponents/HotNum.svg";
@@ -22,15 +22,27 @@ import {
   namesData3,
   colorsData3,
   numberColors,
+  limitsTypes,
 } from "../config";
 
 import Slider from "../svgComponents/slider";
 import Roullete from "../svgComponents/roullete.js";
 import Header from "./Header/Header";
 import { statTabVisibilityAC } from "../store/getStatistic/actions";
-import { gameRuleTabAC, infoTabAC, menuTabAC } from "../store/appData/actions";
+import {
+  gameRuleTabAC,
+  infoTabAC,
+  limitsTabAC,
+  menuTabAC,
+} from "../store/appData/actions";
 import GameRules from "./GameRulesComponent/GameRules";
-
+import Info from "./InfoComponent/Info";
+import {
+  allBetsAC,
+  betsBlackAC,
+  betsRedAC,
+} from "../store/gameSpecific/actions";
+import BettingChip from "../svgComponents/bettingChip";
 const Wrapper = styled.div`
   height: 100vh;
   display: flex;
@@ -40,8 +52,11 @@ const Wrapper = styled.div`
 const MainContainer = styled.div`
   display: flex;
   justify-content: flex-end;
+  overflow: hidden;
+  position: relative;
+  height: calc(100% - 40px);
 `;
-const GameRulesContainer = styled.div`
+const MenuElementsContainer = styled.div`
   width: 94%;
   height: 100%;
   position: absolute;
@@ -51,13 +66,26 @@ const GameRulesContainer = styled.div`
     rgba(60, 66, 80, 0.95) 50%,
     rgba(62, 59, 78, 0.95) 100%
   );
-
+  transition: transform 500ms ease 0s;
+`;
+const MenuElementsIconContainer = styled.div`
+  width: 20px;
+  padding: 2px;
+  display: flex;
+  margin-right: 10px;
+`;
+const MenuElementsSpan = styled.span`
+  position: relative;
+  font-size: 14px;
+  text-transform: uppercase;
+  line-height: normal;
+`;
+const GameRulesContainer = styled(MenuElementsContainer)`
   transform: translateX(
     ${({ gameRuleClose }) => (gameRuleClose ? "0" : "100%")}
   );
-  transition: transform 500ms ease 0s;
 `;
-const GameRulesTitleContainer = styled.div`
+const MenuElementsTitleContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -68,18 +96,8 @@ const GameRulesTitleContainer = styled.div`
   color: rgb(230, 230, 229);
   background-color: rgba(0, 0, 0, 0.3);
 `;
-const GameRulesIconContainer = styled.div`
-  width: 20px;
-  padding: 2px;
-  margin-right: 10px;
-`;
-const GameRulesSpan = styled.span`
-  position: relative;
-  font-size: 14px;
-  text-transform: uppercase;
-  line-height: normal;
-`;
-const GameRulesContent = styled.div`
+
+const MenuElementsContent = styled.div`
   position: relative;
   width: 100%;
   height: calc(100% - 40px);
@@ -255,8 +273,7 @@ const MenuButtonContainer = styled.div`
   background: rgb(26, 26, 26);
 `;
 const MenuMainContainer = styled.div`
-  height: calc(100% - 40px);
-  top: 40px;
+  height: 100%;
   transform: translateX(${({ menuClose }) => (menuClose ? "0" : "100")}%);
   width: 35%;
   background: linear-gradient(
@@ -291,14 +308,14 @@ const MenuItem = styled.button`
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 `;
 const CloseButtonContainer = styled.div`
-  display: ${({ closeStat, menuClose, closeGameRule, closeInfo }) =>
-    closeStat
-      ? "block"
-      : menuClose
-      ? "block"
-      : closeGameRule
-      ? "block"
-      : closeInfo
+  display: ${({
+    closeStat,
+    menuClose,
+    closeGameRule,
+    closeInfo,
+    limitsClose,
+  }) =>
+    closeStat || menuClose || closeGameRule || closeInfo || limitsClose
       ? "block"
       : "none"};
   position: absolute;
@@ -319,49 +336,14 @@ const MenuItemTitle = styled.div`
   font-size: 14px;
 `;
 
-const InfoMainContainer = styled.div`
-  width: 94%;
-  height: 100%;
-  position: absolute;
+const InfoMainContainer = styled(MenuElementsContainer)`
   transform: translateX(${({ infoClose }) => (infoClose ? "0" : "100%")});
-  transition: transform 500ms ease 0s;
-  background: linear-gradient(
-    45deg,
-    rgba(62, 59, 78, 0.95) 0%,
-    rgba(60, 66, 80, 0.95) 50%,
-    rgba(62, 59, 78, 0.95) 100%
-  );
 `;
-const InfoTitleContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  height: 20px;
-  width: 100%;
-  text-align: center;
-  color: rgb(230, 230, 229);
-  background-color: rgba(0, 0, 0, 0.3);
+const LimitsMainContainer = styled(MenuElementsContainer)`
+  transform: translateX(${({ limitsClose }) => (limitsClose ? "0" : "100%")});
 `;
-const InfoIconConteiner = styled.div`
-  width: 20px;
-  padding: 2px;
-  margin-right: 10px;
-`;
-const InfoSpan = styled.span`
-  position: relative;
-  font-size: 14px;
-  text-transform: uppercase;
-  line-height: normal;
-`;
-const InfoContentContainer = styled.div`
-  position: relative;
-  width: 100%;
-  height: calc(100% - 40px);
-`;
-const InfoConteiner = styled.div`
+const LimitsContainer = styled.div`
   height: 100%;
-  overflow-y: auto;
   table {
     height: 100%;
     width: 100%;
@@ -371,19 +353,83 @@ const InfoConteiner = styled.div`
   tr:nth-child(2n) {
     background-color: rgba(0, 0, 0, 0.3);
   }
-  tr:last-of-type {
-    height: 100%;
-  }
   td:first-of-type {
+    width: 22%;
     color: rgb(179, 179, 179);
     border-right: 1px solid rgb(76, 76, 76);
   }
   td {
+    width: 78%;
     padding: 8px 20px;
     color: rgb(230, 230, 230);
     height: 30px;
     line-height: 0;
   }
+  th {
+    height: 20px;
+  }
+`;
+const Tr = styled.tr`
+  // display: ${({ hidden2 }) => (hidden2 === -1 ? "none" : "flex!important")};
+`;
+const PastResultBar = styled.div`
+  height: 244px;
+  width: 30px;
+  background: #000000b3;
+  border: 1px solid #ffffff4d;
+  border-radius: 15px;
+  margin-top: 11px;
+  margin-right: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+const PastResultBarItems = styled.div`
+  font-size: 16px;
+  padding: 3px;
+  color: ${({ color }) => color};
+  :first-of-type {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 28px;
+    width: 100%;
+    background: ${({ color }) =>
+      color === "#FF3333" ? "rgb(255, 51, 51)" : "rgba(255, 255, 255, 0.3)"};
+    color: rgb(255, 255, 255);
+    top: 0px;
+    border-radius: 50%;
+`;
+
+const BettingAria = styled.div`
+  position: absolute;
+  left: 100px;
+  top: 51px;
+`;
+const RedBlock = styled.div`
+  background: red;
+  height: 50px;
+  width: 30px;
+  border: 1px solid white;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 600;
+`;
+const BlackBlock = styled.div`
+  background: black;
+  height: 50px;
+  width: 30px;
+  border: 1px solid white;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 600;
 `;
 
 const TokenComponent = () => {
@@ -398,11 +444,9 @@ const TokenComponent = () => {
     menuTab,
     gameRuleTab,
     infoTab,
-    gameName,
-    playerName,
-    roundId,
-    currentBalance,
-    dealerName,
+    limitsTab,
+    limits,
+    stats,
   } = useSelector((state) => ({
     data1: state.statistic.data1,
     data2: state.statistic.data2,
@@ -413,12 +457,10 @@ const TokenComponent = () => {
     statTab: state.statistic.statTab,
     menuTab: state.appData.menuTab,
     infoTab: state.appData.infoTab,
+    limitsTab: state.appData.limitsTab,
     gameRuleTab: state.appData.gameRuleTab,
-    gameName: state.login.gameName,
-    playerName: state.login.playerName,
-    roundId: state.playerInfo.roundId,
-    currentBalance: state.playerInfo.currentBalance,
-    dealerName: state.playerInfo.dealerName,
+    limits: state.login.limits,
+    stats: state.playerInfo.stats,
   }));
   const dispatch = useDispatch();
   const handleStat = (active, active2) => {
@@ -426,12 +468,64 @@ const TokenComponent = () => {
     dispatch(menuTabAC(active.menu));
     dispatch(gameRuleTabAC(active.gameRule));
     dispatch(infoTabAC(active.info));
+    dispatch(limitsTabAC(active.limits));
   };
-  // console.log(useSelector((state) => state));
+
+  let limitsValue = Object.values(limits);
+  let fndIdx = Object.values(limits).findIndex((idx) => idx.type === -1);
+  let sliced = limitsValue.splice(fndIdx, 1);
+  limitsValue.splice(0, 0, sliced[0]);
+
+  const [betBlack, setBetBlack] = useState(0);
+  const [betRed, setBetRed] = useState(0);
+  const [allBets, setAllBets] = useState(0);
+  const handleBet = (num) => {
+    if (num === 23) {
+      setBetBlack(betBlack + 10);
+      dispatch(
+        betsBlackAC({
+          bets: betBlack + 10,
+          color: betBlack + 10 > 20 ? "green" : "grey",
+          num: 23,
+        })
+      );
+    } else if (num === 13) {
+      setBetRed(betRed + 10);
+      dispatch(
+        betsRedAC({
+          bets: betRed + 10,
+          color: betRed + 10 > 20 ? "green" : "grey",
+          num: 13,
+        })
+      );
+    }
+  };
   return (
     <Wrapper>
       <Header />
       <MainContainer>
+        <PastResultBar>
+          {stats.pastResults
+            .slice()
+            .reverse()
+            .map((item) => {
+              return (
+                <PastResultBarItems color={numberColors[item]}>
+                  {item}
+                </PastResultBarItems>
+              );
+            })}
+        </PastResultBar>
+
+        <BettingAria>
+          <RedBlock onClick={() => handleBet(13)}>
+            {betRed === 0 ? "13" : <BettingChip bets={betRed} />}
+          </RedBlock>
+          <BlackBlock onClick={() => handleBet(23)}>
+            {betBlack === 0 ? "23" : <BettingChip bets={betBlack} />}
+          </BlackBlock>
+        </BettingAria>
+
         <div className="openBtn">
           <StatSVG
             onClick={() => handleStat({ statistic: true })}
@@ -485,7 +579,7 @@ const TokenComponent = () => {
                 </MenuItemTitle>
               </MenuItemConteiner>
             </MenuItem>
-            <MenuItem>
+            <MenuItem onClick={() => handleStat({ limits: true })}>
               <MenuItemConteiner>
                 <MenuItemIcon>
                   <LimitsIcon />
@@ -521,73 +615,69 @@ const TokenComponent = () => {
         </MenuMainContainer>
 
         <GameRulesContainer gameRuleClose={gameRuleTab}>
-          <GameRulesTitleContainer>
-            <GameRulesIconContainer>
+          <MenuElementsTitleContainer>
+            <MenuElementsIconContainer>
               <GameRulesIcon />
-            </GameRulesIconContainer>
-            <GameRulesSpan>GAME RULES</GameRulesSpan>
-          </GameRulesTitleContainer>
-          <GameRulesContent>
+            </MenuElementsIconContainer>
+            <MenuElementsSpan>GAME RULES</MenuElementsSpan>
+          </MenuElementsTitleContainer>
+          <MenuElementsContent>
             <ContentScroll>
               <GameRules />
             </ContentScroll>
-          </GameRulesContent>
+          </MenuElementsContent>
         </GameRulesContainer>
 
         <InfoMainContainer infoClose={infoTab}>
-          <InfoTitleContainer>
-            <InfoIconConteiner>
+          <MenuElementsTitleContainer>
+            <MenuElementsIconContainer>
               <InfoIcon />
-            </InfoIconConteiner>
-            <InfoSpan>info</InfoSpan>
-          </InfoTitleContainer>
-          <InfoContentContainer>
+            </MenuElementsIconContainer>
+            <MenuElementsSpan>info</MenuElementsSpan>
+          </MenuElementsTitleContainer>
+          <MenuElementsContent>
             <ContentScroll>
-              <InfoConteiner>
+              <Info />
+            </ContentScroll>
+          </MenuElementsContent>
+        </InfoMainContainer>
+
+        <LimitsMainContainer limitsClose={limitsTab}>
+          <MenuElementsTitleContainer>
+            <MenuElementsIconContainer>
+              <LimitsIcon />
+            </MenuElementsIconContainer>
+            <MenuElementsSpan>limits</MenuElementsSpan>
+          </MenuElementsTitleContainer>
+          <MenuElementsContent>
+            <ContentScroll>
+              <LimitsContainer>
                 <table>
                   <tbody>
                     <tr>
-                      <td width="22%">Game Name: </td>
-                      <td width="78%">{gameName}</td>
+                      <th></th>
                     </tr>
-                    <tr>
-                      <td>Account: </td>
-                      <td>{playerName}</td>
-                    </tr>
-                    <tr>
-                      <td>Round ID: </td>
-                      <td>{roundId}</td>
-                    </tr>
-                    <tr>
-                      <td>Balance: </td>
-                      <td>{currentBalance}</td>
-                    </tr>
-                    <tr>
-                      <td>Dealer: </td>
-                      <td>{dealerName}</td>
-                    </tr>
-                    <tr>
-                      <td>Table: </td>
-                      <td>1-10000</td>
-                    </tr>
-                    <tr>
-                      <td>Total Bet: </td>
-                      <td>740270</td>
-                    </tr>
-                    <tr>
-                      <td>Last win: </td>
-                      <td>4340</td>
-                    </tr>
+
+                    {limitsValue.map((item) => {
+                      return (
+                        <Tr>
+                          <td>{limitsTypes[item.type]}</td>
+                          <td>
+                            {item.min}-{item.max}
+                          </td>
+                        </Tr>
+                      );
+                    })}
                     <tr>
                       <td></td>
                       <td></td>
                     </tr>
                   </tbody>
                 </table>
-              </InfoConteiner>
+              </LimitsContainer>
             </ContentScroll>
-          </InfoContentContainer>
-        </InfoMainContainer>
+          </MenuElementsContent>
+        </LimitsMainContainer>
 
         <Container stat={statTab}>
           <div className="statBars">
@@ -694,16 +784,19 @@ const TokenComponent = () => {
             </ColdNumConteiner>
             <Slider />
           </div>
+
           <div className="roulleteS">
             <Roullete />
             <NumRounds>LAST {roundsNumber} ROUNDS</NumRounds>
           </div>
         </Container>
+
         <CloseButtonContainer
           closeStat={statTab}
           menuClose={menuTab}
           closeGameRule={gameRuleTab}
           closeInfo={infoTab}
+          limitsClose={limitsTab}
         >
           <CloseButton
             onClick={() => handleStat({ statistic: false }, { menu: false })}

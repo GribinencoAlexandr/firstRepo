@@ -4,6 +4,8 @@ const initialState = {
   loader: true,
   menuTab: false,
   gameRuleTab: false,
+  infoTab: false,
+  limitsTab: false,
 };
 
 export default createReducer(initialState, {
@@ -32,6 +34,12 @@ export default createReducer(initialState, {
     return {
       ...state,
       infoTab: action.payload,
+    };
+  },
+  LIMITS_TAB: (state, action) => {
+    return {
+      ...state,
+      limitsTab: action.payload,
     };
   },
 });
