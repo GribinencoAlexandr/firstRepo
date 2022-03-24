@@ -6,14 +6,16 @@ import { getStatisticSuccessAC } from "./actions";
 export const statisticsMiddleware = (store) => (next) => (action) => {
   switch (action.type) {
     case "GET_STATISTIC":
-      const { token } = store.getState();
+      {
+        const { token } = store.getState();
 
-      let dataStatistics = dataStat(token, action.payload);
-      getStatistic(getStatisticUrl, dataStatistics).then((response) => {
-        console.log("fa", response);
-        store.dispatch(getStatisticSuccessAC(response));
-      });
-      store.dispatch(loadingBarAC(100));
+        let dataStatistics = dataStat(token, action.payload);
+        getStatistic(getStatisticUrl, dataStatistics).then((response) => {
+          console.log("fa", response);
+          store.dispatch(getStatisticSuccessAC(response));
+        });
+        store.dispatch(loadingBarAC(100));
+      }
       break;
 
     default:

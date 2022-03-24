@@ -1,20 +1,19 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
 import styled from "styled-components";
 
 const CircleSVG = styled.circle`
   fill: ${({ color }) => (color > 20 ? "#367f00" : "#949494")};
 `;
+const SVGChip = styled.svg`
+  display: ${({ bet }) => (bet > 0 ? "block" : "none")};
+`;
 const BettingChip = (props) => {
-  //   const { betsBlack } = useSelector((state) => ({
-  //     betsBlack: state.appData.betsBlack,
-  //   }));
-  //   console.log("fasf", betsBlack);
   return (
-    <svg
+    <SVGChip
       id="2dc-layer-1"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 40 40"
+      bet={props.bets}
     >
       <defs>
         <linearGradient id="2dc-linear-gradient-3-1647351747804-20">
@@ -105,7 +104,7 @@ const BettingChip = (props) => {
       <text x="50%" y="50%" dy="5" fontSize="15" textAnchor="middle">
         {props.bets}
       </text>
-    </svg>
+    </SVGChip>
   );
 };
 export default BettingChip;

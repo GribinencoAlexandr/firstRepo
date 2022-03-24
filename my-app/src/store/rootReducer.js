@@ -5,6 +5,7 @@ import statisticReducer from "./getStatistic/reducer";
 import joinFuncReducer from "./joinFunc/reducer";
 import loaderReducer from "./appData/reducer";
 import gameSpecificReducer from "./gameSpecific/reducer";
+import chipsAmountReducer from "./chipsAmount/reducer";
 export default combineReducers({
   token: tokenReducer,
   login: loginReducer,
@@ -12,4 +13,5 @@ export default combineReducers({
   statistic: statisticReducer,
   appData: loaderReducer,
   gameSpecific: gameSpecificReducer,
+  chipsAmount: chipsAmountReducer,
 });

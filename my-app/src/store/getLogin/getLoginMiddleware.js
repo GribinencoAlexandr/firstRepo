@@ -7,19 +7,20 @@ import { joinFuncAC } from "../joinFunc/actions";
 export const loginMiddleware = (store) => (next) => (action) => {
   switch (action.type) {
     case "GET_LOGIN":
-      const { token } = store.getState();
-      const { playerID } = action.payload;
+      {
+        const { token } = store.getState();
+        const { playerID } = action.payload;
 
-      let dataJoin = dataJoinFunc(token, playerID);
-      setInterval(
-        () =>
-          joinFunc(joinFuncUrl, dataJoin).then((response) => {
-            console.log(response);
-            store.dispatch(joinFuncAC(response));
-          }),
-        1000
-      );
-      store.dispatch(loadingBarAC(95));
+        let dataJoin = dataJoinFunc(token, playerID);
+        setInterval(
+          () =>
+            joinFunc(joinFuncUrl, dataJoin).then((response) => {
+              store.dispatch(joinFuncAC(response));
+            }),
+          1000
+        );
+        store.dispatch(loadingBarAC(95));
+      }
       break;
     default:
   }
