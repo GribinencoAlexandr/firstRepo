@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { ReactComponent as HotNumLogo } from "../svgComponents/HotNum.svg";
@@ -13,6 +13,7 @@ import { ReactComponent as LimitsIcon } from "../svgComponents/MenuIcons/LimitsI
 import { ReactComponent as InfoIcon } from "../svgComponents/MenuIcons/InfoIcon.svg";
 import { ReactComponent as StatisticIcon } from "../svgComponents/MenuIcons/StatisticIcon.svg";
 import { ReactComponent as FavoriteIcon } from "../svgComponents/MenuIcons/FavoriteIcon.svg";
+import { ReactComponent as UndoButton } from "../svgComponents/undoButton.svg";
 import "./TokenComponent.css";
 import {
   colorsData1,
@@ -37,12 +38,9 @@ import {
 } from "../store/appData/actions";
 import GameRules from "./GameRulesComponent/GameRules";
 import Info from "./InfoComponent/Info";
-import {
-  allBetsAC,
-  betsBlackAC,
-  betsRedAC,
-} from "../store/gameSpecific/actions";
+import { allBetsAC, undoBetAC } from "../store/gameSpecific/actions";
 import BettingChip from "../svgComponents/bettingChip";
+import ChoosenChip from "../svgComponents/choosenChip";
 const Wrapper = styled.div`
   height: 100vh;
   display: flex;
@@ -396,7 +394,11 @@ const PastResultBarItems = styled.div`
     height: 28px;
     width: 100%;
     background: ${({ color }) =>
-      color === "#FF3333" ? "rgb(255, 51, 51)" : "rgba(255, 255, 255, 0.3)"};
+      color === "#FF3333"
+        ? "rgb(255, 51, 51)"
+        : color === "#00B233"
+        ? "#00B233"
+        : "rgba(255, 255, 255, 0.3)"};
     color: rgb(255, 255, 255);
     top: 0px;
     border-radius: 50%;
@@ -431,7 +433,43 @@ const BlackBlock = styled.div`
   font-size: 18px;
   font-weight: 600;
 `;
+const ChooseBetContainer = styled.div`
+  position: absolute;
+  width: 140px;
+  height: 60px;
+  bottom: 30px;
+  right: 40%;
+  color: white;
+`;
 
+const AllChips = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const UndoButtonConteiner = styled.div`
+  position: absolute;
+  bottom: 21px;
+  left: 220px;
+  width: 46px;
+  display: flex;
+  height: 46px;
+  z-index: 1;
+  box-sizing: border-box;
+  padding: 0;
+  border-radius: 50%;
+  vertical-align: top;
+  margin: 0 auto;
+  color: #fff;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid hsla(0, 0%, 100%, 0.3);
+  svg {
+    width: 32px;
+    height: 32px;
+    transform: rotate(345deg);
+  }
+`;
 const TokenComponent = () => {
   const {
     data1,
@@ -447,6 +485,8 @@ const TokenComponent = () => {
     limitsTab,
     limits,
     stats,
+    bets,
+    chip,
   } = useSelector((state) => ({
     data1: state.statistic.data1,
     data2: state.statistic.data2,
@@ -461,6 +501,8 @@ const TokenComponent = () => {
     gameRuleTab: state.appData.gameRuleTab,
     limits: state.login.limits,
     stats: state.playerInfo.stats,
+    bets: state.gameSpecific.allBets,
+    chip: state.chipsAmount.chip,
   }));
   const dispatch = useDispatch();
   const handleStat = (active, active2) => {
@@ -475,30 +517,16 @@ const TokenComponent = () => {
   let fndIdx = Object.values(limits).findIndex((idx) => idx.type === -1);
   let sliced = limitsValue.splice(fndIdx, 1);
   limitsValue.splice(0, 0, sliced[0]);
-
-  const [betBlack, setBetBlack] = useState(0);
-  const [betRed, setBetRed] = useState(0);
-  const [allBets, setAllBets] = useState(0);
-  const handleBet = (num) => {
-    if (num === 23) {
-      setBetBlack(betBlack + 10);
-      dispatch(
-        betsBlackAC({
-          bets: betBlack + 10,
-          color: betBlack + 10 > 20 ? "green" : "grey",
-          num: 23,
-        })
-      );
-    } else if (num === 13) {
-      setBetRed(betRed + 10);
-      dispatch(
-        betsRedAC({
-          bets: betRed + 10,
-          color: betRed + 10 > 20 ? "green" : "grey",
-          num: 13,
-        })
-      );
-    }
+  const handleBet = (num, value) => {
+    dispatch(
+      allBetsAC({
+        type: num,
+        betSize: value,
+      })
+    );
+  };
+  const handleUndo = () => {
+    dispatch(undoBetAC());
   };
   return (
     <Wrapper>
@@ -518,13 +546,36 @@ const TokenComponent = () => {
         </PastResultBar>
 
         <BettingAria>
-          <RedBlock onClick={() => handleBet(13)}>
-            {betRed === 0 ? "13" : <BettingChip bets={betRed} />}
+          <RedBlock onClick={() => handleBet(13, chip)}>
+            {bets[13]?.amount > 0 ? (
+              <BettingChip bets={bets[13]?.amount} />
+            ) : (
+              "13"
+            )}
           </RedBlock>
-          <BlackBlock onClick={() => handleBet(23)}>
-            {betBlack === 0 ? "23" : <BettingChip bets={betBlack} />}
+          <BlackBlock onClick={() => handleBet(23, chip)}>
+            {bets[23]?.amount > 0 ? (
+              <BettingChip bets={bets[23]?.amount} />
+            ) : (
+              "23"
+            )}
           </BlackBlock>
         </BettingAria>
+
+        <ChooseBetContainer>
+          Choose your bet{" "}
+          <AllChips>
+            <ChoosenChip color="#cd95ff" chip={10} />
+            <ChoosenChip color="green" chip={20} />
+            <ChoosenChip color="red" chip={50} />
+            {/* <div onClick={() => dispatch(chipsAmountAC({ chip: 20 }))}>20</div>
+            <div onClick={() => dispatch(chipsAmountAC({ chip: 50 }))}>50</div> */}
+          </AllChips>
+        </ChooseBetContainer>
+
+        <UndoButtonConteiner>
+          <UndoButton onClick={handleUndo} />
+        </UndoButtonConteiner>
 
         <div className="openBtn">
           <StatSVG
@@ -537,6 +588,7 @@ const TokenComponent = () => {
             />
           </StatSVG>
         </div>
+
         <MenuButtonContainer menuClose={menuTab}>
           <div className="menuButtonPadding">
             <MenuButton onClick={() => handleStat({ menu: true })} />

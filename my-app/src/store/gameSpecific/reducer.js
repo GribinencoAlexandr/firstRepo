@@ -1,36 +1,30 @@
 import { createReducer } from "@reduxjs/toolkit";
 
-const initialState = {};
+const initialState = {
+  allBets: {},
+  bets: {},
+  totalBetsAmount: 0,
+  betsSequence: [],
+};
 
 export default createReducer(initialState, {
   ALL_BETS: (state, action) => {
     return {
       ...state,
-      allBets: {
-        amount: action.payload.bets,
-        isValid: true,
-        color: action.payload.color,
-      },
+      allBets: action.payload.allBets,
+      bets: action.payload.bets,
+      totalBetsAmount: action.payload.totalBetsAmount,
+      betsSequence: action.payload.betsSequence,
     };
   },
-  BETS_BLACK: (state, action) => {
+  UNDO_BET: (state, action) => {
+    console.log(action.payload);
     return {
       ...state,
-      23: {
-        amount: action.payload.bets,
-        isValid: true,
-        color: action.payload.color,
-      },
-    };
-  },
-  BETS_RED: (state, action) => {
-    return {
-      ...state,
-      13: {
-        amount: action.payload.bets,
-        isValid: true,
-        color: action.payload.color,
-      },
+      allBets: action.payload.allBets,
+      bets: action.payload.bets,
+      totalBetsAmount: action.payload.totalBetsAmount,
+      betsSequence: action.payload.betsSequence,
     };
   },
 });

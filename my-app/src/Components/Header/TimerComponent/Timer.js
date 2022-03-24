@@ -7,15 +7,13 @@ const TimerComponent = styled.div`
 `;
 
 const Timer = () => {
-  const { miliSecondsLeftToWait, miliSecondsToWait, roundStatus } = useSelector(
-    (state) => ({
-      miliSecondsLeftToWait: (
-        state.playerInfo.miliSecondsLeftToWait / 1000
-      ).toFixed(0),
-      miliSecondsToWait: state.playerInfo.miliSecondsToWait,
-      roundStatus: state.playerInfo.roundStatus,
-    })
-  );
+  const { miliSecondsLeftToWait, roundStatus } = useSelector((state) => ({
+    miliSecondsLeftToWait: (
+      state.playerInfo.miliSecondsLeftToWait / 1000
+    ).toFixed(0),
+    miliSecondsToWait: state.playerInfo.miliSecondsToWait,
+    roundStatus: state.playerInfo.roundStatus,
+  }));
   const [secondsToLeft, setSecondsToLeft] = useState(miliSecondsLeftToWait);
   useEffect(() => {
     if (
