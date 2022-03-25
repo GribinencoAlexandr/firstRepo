@@ -24,6 +24,7 @@ import {
   colorsData3,
   numberColors,
   limitsTypes,
+  BetPointsEnum,
 } from "../config";
 
 import Slider from "../svgComponents/slider";
@@ -406,32 +407,25 @@ const PastResultBarItems = styled.div`
 
 const BettingAria = styled.div`
   position: absolute;
+  display: flex;
   left: 100px;
   top: 51px;
 `;
-const RedBlock = styled.div`
-  background: red;
-  height: 50px;
-  width: 30px;
-  border: 1px solid white;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 18px;
-  font-weight: 600;
-`;
 const BlackBlock = styled.div`
   background: black;
-  height: 50px;
-  width: 30px;
+  height: 65px;
+  width: 50px;
   border: 1px solid white;
   color: white;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 18px;
+  font-size: 8px;
   font-weight: 600;
+  pointer-events: ${({ disabled }) => (disabled ? "none" : "unset")};
+  :nth-child(2n) {
+    background: red;
+  }
 `;
 const ChooseBetContainer = styled.div`
   position: absolute;
@@ -454,7 +448,6 @@ const UndoButtonConteiner = styled.div`
   width: 46px;
   display: flex;
   height: 46px;
-  z-index: 1;
   box-sizing: border-box;
   padding: 0;
   border-radius: 50%;
@@ -486,6 +479,7 @@ const TokenComponent = () => {
     limits,
     stats,
     bets,
+    totalBetsAmount,
     chip,
   } = useSelector((state) => ({
     data1: state.statistic.data1,
@@ -502,6 +496,7 @@ const TokenComponent = () => {
     limits: state.login.limits,
     stats: state.playerInfo.stats,
     bets: state.gameSpecific.allBets,
+    totalBetsAmount: state.gameSpecific.totalBetsAmount,
     chip: state.chipsAmount.chip,
   }));
   const dispatch = useDispatch();
@@ -517,10 +512,10 @@ const TokenComponent = () => {
   let fndIdx = Object.values(limits).findIndex((idx) => idx.type === -1);
   let sliced = limitsValue.splice(fndIdx, 1);
   limitsValue.splice(0, 0, sliced[0]);
-  const handleBet = (num, value) => {
+  const handleBet = (type, value) => {
     dispatch(
       allBetsAC({
-        type: num,
+        type: type,
         betSize: value,
       })
     );
@@ -546,30 +541,43 @@ const TokenComponent = () => {
         </PastResultBar>
 
         <BettingAria>
-          <RedBlock onClick={() => handleBet(13, chip)}>
-            {bets[13]?.amount > 0 ? (
-              <BettingChip bets={bets[13]?.amount} />
+          {limitsValue.map((item) => {
+            // console.log(limitsTypes2[item.type]);
+            let limitValueNumber = BetPointsEnum[limitsTypes[item.type]];
+            let limitVerification =
+              typeof limitValueNumber === "object" ? limitValueNumber[0] : 157;
+            console.log(bets[limitVerification]?.amount === item.max);
+            return limitsTypes[item.type] === "Table" ? (
+              ""
             ) : (
-              "13"
-            )}
-          </RedBlock>
-          <BlackBlock onClick={() => handleBet(23, chip)}>
-            {bets[23]?.amount > 0 ? (
-              <BettingChip bets={bets[23]?.amount} />
-            ) : (
-              "23"
-            )}
-          </BlackBlock>
+              <BlackBlock
+                disabled={
+                  bets[limitVerification]?.amount === item.max ||
+                  totalBetsAmount >= 10000
+                }
+                onClick={() =>
+                  handleBet(
+                    limitVerification,
+                    chip > item.max ? item.max : chip
+                  )
+                }
+              >
+                {bets[limitVerification]?.amount > 0 ? (
+                  <BettingChip bets={bets[limitVerification]?.amount} />
+                ) : (
+                  limitsTypes[item.type]
+                )}
+              </BlackBlock>
+            );
+          })}
         </BettingAria>
 
         <ChooseBetContainer>
           Choose your bet{" "}
           <AllChips>
-            <ChoosenChip color="#cd95ff" chip={10} />
-            <ChoosenChip color="green" chip={20} />
-            <ChoosenChip color="red" chip={50} />
-            {/* <div onClick={() => dispatch(chipsAmountAC({ chip: 20 }))}>20</div>
-            <div onClick={() => dispatch(chipsAmountAC({ chip: 50 }))}>50</div> */}
+            <ChoosenChip color="#cd95ff" chip={1} />
+            <ChoosenChip color="green" chip={3} />
+            <ChoosenChip color="red" chip={500} />
           </AllChips>
         </ChooseBetContainer>
 

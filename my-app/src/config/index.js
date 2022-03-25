@@ -155,13 +155,31 @@ export const numberRoulleteColors = {
 };
 export const limitsTypes = {
   "-1": "Table",
-  1: "Straight Up",
+  1: "StraightUp",
   2: "Split",
   3: "Trio",
   5: "Corner",
-  6: "Six-Line",
-  7: "Column",
-  9: "Outside Half",
-  10: "Inside Total",
-  11: "Outside Total",
+  6: "SixNumber",
+  7: "Dozen",
+  9: "Column",
+  10: "OutsideHalf",
+  11: "OutsideTotal",
+};
+export const BetPointsEnum = {
+  StraightUp: [0, 36],
+  Split: [37, 96],
+  Trio: [97, 110],
+  Corner: [111, 133],
+  SixNumber: [134, 144],
+  Dozen: [145, 147],
+  Column: [148, 150],
+  OutsideHalf: [151, 156],
+  findPropFromVal: (v) => {
+    return Object.keys(BetPointsEnum).find(
+      (x) =>
+        BetPointsEnum[x].length > 1 &&
+        BetPointsEnum[x][0] <= v &&
+        BetPointsEnum[x][1] >= v
+    );
+  },
 };
