@@ -183,3 +183,5 @@ export const BetPointsEnum = {
     );
   },
 };
+export const chipColors =
+  "lightgrey,red,blue,green,yellow,lightgreen,orange,purple,gold,brown";

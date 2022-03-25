@@ -1,4 +1,4 @@
-import { dataJoinFunc, joinFuncUrl } from "../../config";
+import { dataJoinFunc, joinFuncUrl, chipColors } from "../../config";
 import { joinFunc } from "../../Services/joinThunks";
 import { loadingBarAC } from "../appData/actions";
 
@@ -9,8 +9,12 @@ export const loginMiddleware = (store) => (next) => (action) => {
     case "GET_LOGIN":
       {
         const { token } = store.getState();
-        const { playerID } = action.payload;
+        const { playerID, chipsRange } = action.payload;
+        let a = /\s*,\s*/;
+        let chipColors2 = chipColors.split(a);
+        let chipRange2 = chipsRange.split(a);
 
+        console.log(chipsRange);
         let dataJoin = dataJoinFunc(token, playerID);
         setInterval(
           () =>
@@ -20,6 +24,9 @@ export const loginMiddleware = (store) => (next) => (action) => {
           1000
         );
         store.dispatch(loadingBarAC(95));
+        action.payload.chipsRangeColor = chipRange2.map(
+          (item) => chipColors2[chipRange2.indexOf(item)]
+        );
       }
       break;
     default:
