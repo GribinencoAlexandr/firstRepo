@@ -23,7 +23,9 @@ export const gameSpecificMiddleware = (store) => (next) => (action) => {
             amount: allBetsAmount(
               betSize + (allBets[type]?.amount || 0),
               type,
-              limits
+              limits,
+              totalBetsAmount,
+              allBets[type]?.amount || 0
             ),
             isValid: allBetsLimits(
               betSize + (allBets[type]?.amount || 0),
@@ -38,7 +40,10 @@ export const gameSpecificMiddleware = (store) => (next) => (action) => {
           ...bets,
           [type]: [...(bets[type] || []), betSize],
         };
-        let newTotalBetsAmount = totalBetsAmount + betSize;
+        let newTotalBetsAmount =
+          totalBetsAmount + betSize >= 10000
+            ? 10000
+            : totalBetsAmount + betSize;
         let dataBetsSequence = [
           ...betsSequence,
           {
@@ -51,9 +56,6 @@ export const gameSpecificMiddleware = (store) => (next) => (action) => {
         action.payload.bets = newBets;
         action.payload.totalBetsAmount = newTotalBetsAmount;
         action.payload.betsSequence = dataBetsSequence;
-
-        // console.log("ba", bets[type]);
-        // console.log("asd", newAllBets);
       }
       break;
     case "UNDO_BET":
