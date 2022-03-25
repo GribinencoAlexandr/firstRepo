@@ -477,6 +477,7 @@ const TokenComponent = () => {
     infoTab,
     limitsTab,
     limits,
+    chipsRangeColor,
     stats,
     bets,
     totalBetsAmount,
@@ -494,6 +495,7 @@ const TokenComponent = () => {
     limitsTab: state.appData.limitsTab,
     gameRuleTab: state.appData.gameRuleTab,
     limits: state.login.limits,
+    chipsRangeColor: state.login.chipsRangeColor,
     stats: state.playerInfo.stats,
     bets: state.gameSpecific.allBets,
     totalBetsAmount: state.gameSpecific.totalBetsAmount,
@@ -546,7 +548,6 @@ const TokenComponent = () => {
             let limitValueNumber = BetPointsEnum[limitsTypes[item.type]];
             let limitVerification =
               typeof limitValueNumber === "object" ? limitValueNumber[0] : 157;
-            console.log(bets[limitVerification]?.amount === item.max);
             return limitsTypes[item.type] === "Table" ? (
               ""
             ) : (
@@ -563,7 +564,10 @@ const TokenComponent = () => {
                 }
               >
                 {bets[limitVerification]?.amount > 0 ? (
-                  <BettingChip bets={bets[limitVerification]?.amount} />
+                  <BettingChip
+                    colorChip={chipsRangeColor[bets[limitVerification]?.amount]}
+                    bets={bets[limitVerification]?.amount}
+                  />
                 ) : (
                   limitsTypes[item.type]
                 )}
@@ -577,7 +581,7 @@ const TokenComponent = () => {
           <AllChips>
             <ChoosenChip color="#cd95ff" chip={1} />
             <ChoosenChip color="green" chip={3} />
-            <ChoosenChip color="red" chip={500} />
+            <ChoosenChip color="red" chip={5} />
           </AllChips>
         </ChooseBetContainer>
 

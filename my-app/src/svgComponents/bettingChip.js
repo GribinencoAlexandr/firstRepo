@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 const CircleSVG = styled.circle`
-  fill: ${({ color }) => (color > 20 ? "#367f00" : "#949494")};
+  fill: ${({ color }) => color};
 `;
 const SVGChip = styled.svg`
   display: ${({ bet }) => (bet > 0 ? "block" : "none")};
@@ -28,7 +28,7 @@ const BettingChip = (props) => {
         cx="20"
         cy="20"
         r="20"
-        color={props.bets}
+        color={props.colorChip}
       ></CircleSVG>
       <path
         id="Path_34"

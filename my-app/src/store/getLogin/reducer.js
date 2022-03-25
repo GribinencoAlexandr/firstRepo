@@ -5,6 +5,8 @@ const initialState = {
   playerID: 0,
   playerName: "",
   limits: "",
+  chipsRange: "",
+  chipsRangeColor: "",
 };
 
 export default createReducer(initialState, {
@@ -14,6 +16,8 @@ export default createReducer(initialState, {
       playerID: action.payload.playerID,
       playerName: action.payload.playerName,
       limits: action.payload.limits,
+      chipsRange: action.payload.chipsRange,
+      chipsRangeColor: action.payload.chipsRangeColor,
     };
   },
 });
