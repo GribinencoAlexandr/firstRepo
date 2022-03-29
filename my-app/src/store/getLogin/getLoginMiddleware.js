@@ -1,4 +1,4 @@
-import { dataJoinFunc, joinFuncUrl, chipColors } from "../../config";
+import { dataJoinFunc, joinFuncUrl } from "../../config";
 import { joinFunc } from "../../Services/joinThunks";
 import { loadingBarAC } from "../appData/actions";
 
@@ -11,7 +11,7 @@ export const loginMiddleware = (store) => (next) => (action) => {
         const { token } = store.getState();
         const { playerID, chipsRange } = action.payload;
         let a = /\s*,\s*/;
-        let chipColors2 = chipColors.split(a);
+        let chipColors2 = store.getState().firstReq.chipColors.split(a);
         let chipRange2 = chipsRange.split(a);
 
         console.log(chipsRange);

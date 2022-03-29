@@ -14,6 +14,7 @@ import { ReactComponent as InfoIcon } from "../svgComponents/MenuIcons/InfoIcon.
 import { ReactComponent as StatisticIcon } from "../svgComponents/MenuIcons/StatisticIcon.svg";
 import { ReactComponent as FavoriteIcon } from "../svgComponents/MenuIcons/FavoriteIcon.svg";
 import { ReactComponent as UndoButton } from "../svgComponents/undoButton.svg";
+import { ReactComponent as ConfirmButton } from "../svgComponents/confirnButton.svg";
 import "./TokenComponent.css";
 import {
   colorsData1,
@@ -42,6 +43,7 @@ import Info from "./InfoComponent/Info";
 import { allBetsAC, undoBetAC } from "../store/gameSpecific/actions";
 import BettingChip from "../svgComponents/bettingChip";
 import ChoosenChip from "../svgComponents/choosenChip";
+import { placeBetAC } from "../store/placeBet/actions";
 const Wrapper = styled.div`
   height: 100vh;
   display: flex;
@@ -463,6 +465,16 @@ const UndoButtonConteiner = styled.div`
     transform: rotate(345deg);
   }
 `;
+const ConfirmButtonContainer = styled.div`
+  width: 46px;
+  position: absolute;
+  bottom: 22px;
+  right: 228px;
+  pointer-events: ${({ disabled }) => (disabled ? "none" : "unset")};
+  circle {
+    fill: ${({ disabled }) => (disabled ? "dimgrey" : "rgb(109, 193, 128)")};
+  }
+`;
 const TokenComponent = () => {
   const {
     data1,
@@ -481,7 +493,10 @@ const TokenComponent = () => {
     stats,
     bets,
     totalBetsAmount,
+
     chip,
+
+    preBetsAllowed,
   } = useSelector((state) => ({
     data1: state.statistic.data1,
     data2: state.statistic.data2,
@@ -499,7 +514,13 @@ const TokenComponent = () => {
     stats: state.playerInfo.stats,
     bets: state.gameSpecific.allBets,
     totalBetsAmount: state.gameSpecific.totalBetsAmount,
+    betsSequence: state.gameSpecific.betsSequence,
     chip: state.chipsAmount.chip,
+    token: state.token,
+    playerId: state.login.playerID,
+    roundId: state.playerInfo.roundId,
+    roundStatus: state.playerInfo.roundStatus,
+    preBetsAllowed: state.firstReq.preBetsAllowed,
   }));
   const dispatch = useDispatch();
   const handleStat = (active, active2) => {
@@ -525,6 +546,10 @@ const TokenComponent = () => {
   const handleUndo = () => {
     dispatch(undoBetAC());
   };
+  const confirmBet = () => {
+    dispatch(placeBetAC());
+  };
+
   return (
     <Wrapper>
       <Header />
@@ -533,18 +558,24 @@ const TokenComponent = () => {
           {stats.pastResults
             .slice()
             .reverse()
-            .map((item) => {
+            .map((item, i) => {
               return (
-                <PastResultBarItems color={numberColors[item]}>
+                <PastResultBarItems color={numberColors[item]} key={i}>
                   {item}
                 </PastResultBarItems>
               );
             })}
         </PastResultBar>
 
+        <ConfirmButtonContainer
+          onClick={() => confirmBet()}
+          disabled={!preBetsAllowed}
+        >
+          <ConfirmButton />
+        </ConfirmButtonContainer>
         <BettingAria>
-          {limitsValue.map((item) => {
-            // console.log(limitsTypes2[item.type]);
+          {limitsValue.map((item, i) => {
+            // console.log(limitsTypes[item.type]);
             let limitValueNumber = BetPointsEnum[limitsTypes[item.type]];
             let limitVerification =
               typeof limitValueNumber === "object" ? limitValueNumber[0] : 157;
@@ -552,6 +583,7 @@ const TokenComponent = () => {
               ""
             ) : (
               <BlackBlock
+                key={i}
                 disabled={
                   bets[limitVerification]?.amount === item.max ||
                   totalBetsAmount >= 10000
@@ -565,6 +597,7 @@ const TokenComponent = () => {
               >
                 {bets[limitVerification]?.amount > 0 ? (
                   <BettingChip
+                    key={i}
                     colorChip={chipsRangeColor[bets[limitVerification]?.amount]}
                     bets={bets[limitVerification]?.amount}
                   />
@@ -722,9 +755,9 @@ const TokenComponent = () => {
                       <th></th>
                     </tr>
 
-                    {limitsValue.map((item) => {
+                    {limitsValue.map((item, i) => {
                       return (
-                        <Tr>
+                        <Tr key={i}>
                           <td>{limitsTypes[item.type]}</td>
                           <td>
                             {item.min}-{item.max}
@@ -746,9 +779,9 @@ const TokenComponent = () => {
         <Container stat={statTab}>
           <div className="statBars">
             <StatBar>
-              {Object.keys(data1).map((item) => {
+              {Object.keys(data1).map((item, i) => {
                 return (
-                  <BarItems>
+                  <BarItems key={i}>
                     <div className="barItemName">
                       <SpanNameFirst color={colorsData1[item]}>
                         {namesData1[item]} {data1[item]}%
@@ -766,9 +799,10 @@ const TokenComponent = () => {
             </StatBar>
             <StatBar>
               <BarNames>
-                {Object.keys(data2).map((item) => {
+                {Object.keys(data2).map((item, i) => {
                   return (
                     <SpanNameFirst2
+                      key={i}
                       color={colorsData2[item]}
                       className="someClass"
                     >
@@ -778,9 +812,10 @@ const TokenComponent = () => {
                 })}
               </BarNames>
               <StatBarConteiner>
-                {Object.keys(data2).map((item) => {
+                {Object.keys(data2).map((item, i) => {
                   return (
                     <BarItemsFirst
+                      key={i}
                       color={colorsData2[item]}
                       width={data2[item]}
                     ></BarItemsFirst>
@@ -790,9 +825,10 @@ const TokenComponent = () => {
             </StatBar>
             <StatBar>
               <BarNames>
-                {Object.keys(data3).map((item) => {
+                {Object.keys(data3).map((item, i) => {
                   return (
                     <SpanNameFirst2
+                      key={i}
                       color={colorsData3[item]}
                       className="someClass"
                     >
@@ -802,9 +838,10 @@ const TokenComponent = () => {
                 })}
               </BarNames>
               <StatBarConteiner>
-                {Object.keys(data3).map((item) => {
+                {Object.keys(data3).map((item, i) => {
                   return (
                     <BarItemsFirst
+                      key={i}
                       color={colorsData3[item]}
                       width={data3[item]}
                     ></BarItemsFirst>
@@ -819,9 +856,12 @@ const TokenComponent = () => {
                   <HotNumLogo />
                 </IconContainer>
                 <HotNumbers>
-                  {Object.keys(hotNumData).map((item) => {
+                  {Object.keys(hotNumData).map((item, i) => {
                     return (
-                      <HotNumItem color={numberColors[hotNumData[item]]}>
+                      <HotNumItem
+                        color={numberColors[hotNumData[item]]}
+                        key={i}
+                      >
                         {hotNumData[item]}
                       </HotNumItem>
                     );
@@ -836,9 +876,12 @@ const TokenComponent = () => {
                   <ColdNumLogo />
                 </IconContainer2>
                 <HotNumbers>
-                  {Object.keys(coldNumData).map((item) => {
+                  {Object.keys(coldNumData).map((item, i) => {
                     return (
-                      <ColdNumItem color={numberColors[coldNumData[item]]}>
+                      <ColdNumItem
+                        color={numberColors[coldNumData[item]]}
+                        key={i}
+                      >
                         {coldNumData[item]}
                       </ColdNumItem>
                     );

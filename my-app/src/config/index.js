@@ -5,7 +5,9 @@ export const getStatisticUrl =
   "https://services.xpgtesting.com/RService/GetGameStatistics";
 export const joinFuncUrl =
   "https://services.xpgtesting.com/RService/GetGameStateBySequence";
-
+export const placeBetUrl =
+  "https://services.xpgtesting.com/RService/PlaceBetsWithResult";
+export const firstReqUrl = "https://services.xpgtesting.com/ApiParams/Game/3/1";
 const gameId = "2";
 
 export const dataToken = {
@@ -38,6 +40,16 @@ export const dataStat = (token, statItems = 100) => {
     commKey: token.substr(0, 5),
     gameId: gameId,
     statisticsItems: statItems,
+  };
+  return data;
+};
+export const dataPlaceBet = (token, playerId, roundId, dataBet) => {
+  const data = {
+    commKey: token.substr(0, 5),
+    gameId: gameId,
+    playerId: playerId,
+    roundId: roundId,
+    bets: dataBet,
   };
   return data;
 };
@@ -183,5 +195,11 @@ export const BetPointsEnum = {
     );
   },
 };
-export const chipColors =
-  "lightgrey,red,blue,green,yellow,lightgreen,orange,purple,gold,brown";
+
+export const RoundPhaseEnum = {
+  StartRound: 0,
+  PlaceYourBets: 1,
+  LastBets: 2,
+  NoMoreBets: 3,
+  RoundResult: 5,
+};

@@ -3,12 +3,12 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import "./index.css";
 import App from "./App";
-import { getTokenAC } from "./store/getToken/actions";
 import reportWebVitals from "./reportWebVitals";
 import store from "./store/store";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { getFirstReqAC } from "./store/getFirstReq/actions";
 
-store.dispatch(getTokenAC());
+store.dispatch(getFirstReqAC());
 
 ReactDOM.render(
   <Provider store={store}>
