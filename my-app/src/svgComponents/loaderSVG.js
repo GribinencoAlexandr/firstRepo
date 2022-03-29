@@ -49,7 +49,6 @@ const LoaderSVG = () => {
   const { loadingPercent } = useSelector((state) => ({
     loadingPercent: state.appData.loadingPercent,
   }));
-  console.log(loadingPercent);
   return (
     <LoaderSVGConteiner>
       <LoaderSVGComponent viewBox="0 0 296.637 200">
