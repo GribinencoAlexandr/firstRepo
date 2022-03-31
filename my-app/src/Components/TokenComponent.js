@@ -470,9 +470,27 @@ const ConfirmButtonContainer = styled.div`
   position: absolute;
   bottom: 22px;
   right: 228px;
-  pointer-events: ${({ disabled }) => (disabled ? "none" : "unset")};
+  // pointer-events: ${({ disabled }) => (disabled ? "none" : "unset")};
   circle {
     fill: ${({ disabled }) => (disabled ? "dimgrey" : "rgb(109, 193, 128)")};
+  }
+`;
+const VerificationContainer = styled.div`
+  display: flex;
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 151px;
+  height: 33px;
+  background: green;
+  color: white;
+  transition: all 0.6s ease-in 1s;
+  div {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    align-items: center;
   }
 `;
 const TokenComponent = () => {
@@ -493,10 +511,9 @@ const TokenComponent = () => {
     stats,
     bets,
     totalBetsAmount,
-
     chip,
-
     preBetsAllowed,
+    notification,
   } = useSelector((state) => ({
     data1: state.statistic.data1,
     data2: state.statistic.data2,
@@ -521,6 +538,7 @@ const TokenComponent = () => {
     roundId: state.playerInfo.roundId,
     roundStatus: state.playerInfo.roundStatus,
     preBetsAllowed: state.firstReq.preBetsAllowed,
+    notification: state.appData.notification,
   }));
   const dispatch = useDispatch();
   const handleStat = (active, active2) => {
@@ -549,7 +567,7 @@ const TokenComponent = () => {
   const confirmBet = () => {
     dispatch(placeBetAC());
   };
-
+  // console.log(Object.values(NotificationText)["betsAccepted"]);
   return (
     <Wrapper>
       <Header />
@@ -566,6 +584,12 @@ const TokenComponent = () => {
               );
             })}
         </PastResultBar>
+
+        {notification && (
+          <VerificationContainer>
+            <div>{notification}</div>
+          </VerificationContainer>
+        )}
 
         <ConfirmButtonContainer
           onClick={() => confirmBet()}
