@@ -6,11 +6,12 @@ const initialState = {
   gameRuleTab: false,
   infoTab: false,
   limitsTab: false,
+  notification: "",
 };
 
 export default createReducer(initialState, {
   LOADER: (state, action) => {
-    return { loader: action.payload };
+    return { ...state, loader: action.payload };
   },
   LOADING_BAR: (state, action) => {
     return {
@@ -40,6 +41,12 @@ export default createReducer(initialState, {
     return {
       ...state,
       limitsTab: action.payload,
+    };
+  },
+  NOTIFICATION: (state, action) => {
+    return {
+      ...state,
+      notification: action.payload,
     };
   },
 });

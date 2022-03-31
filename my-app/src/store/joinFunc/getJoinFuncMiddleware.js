@@ -1,8 +1,7 @@
 import { getStatisticAC } from "../getStatistic/actions";
 import { loaderAC } from "../appData/actions";
 import { roundStatusChangeAC } from "./actions";
-import { placeBetFunc } from "../../Services/placeBetThunk";
-import { dataPlaceBet, placeBetUrl, RoundPhaseEnum } from "../../config";
+import { RoundPhaseEnum } from "../../config";
 import { placeBetAC } from "../placeBet/actions";
 
 export const getJoinMiddleware = (store) => (next) => (action) => {
@@ -20,8 +19,7 @@ export const getJoinMiddleware = (store) => (next) => (action) => {
       if (store.getState().playerInfo.roundStatus !== payloadRoundStatus) {
         store.dispatch(roundStatusChangeAC(payloadRoundStatus));
       }
-      // console.log("a1", store.getState().playerInfo.roundStatus);
-      // console.log("a2", payloadRoundStatus);
+      break;
     }
     case "ROUND_STATUS_CHANGE": {
       const { preBetsAllowed } = store.getState().firstReq;
@@ -37,16 +35,17 @@ export const getJoinMiddleware = (store) => (next) => (action) => {
           console.log("Last Bets");
           break;
         case RoundPhaseEnum.NoMoreBets:
-          {
-            !preBetsAllowed && store.dispatch(placeBetAC());
-          }
+          !preBetsAllowed && store.dispatch(placeBetAC());
           break;
         case RoundPhaseEnum.RoundResult:
           console.log("Round Result ");
+          break;
         default:
           break;
       }
+      break;
     }
+    default:
   }
   next(action);
 };

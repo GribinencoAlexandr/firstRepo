@@ -203,3 +203,9 @@ export const RoundPhaseEnum = {
   NoMoreBets: 3,
   RoundResult: 5,
 };
+
+export const NotificationText = {
+  betsAccepted: "Bets Accepted",
+  error:
+    "Some of your bets did not meet the minimum required. Those bets were cleared and funds returned",
+};
