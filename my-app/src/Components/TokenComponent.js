@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { ReactComponent as HotNumLogo } from "../svgComponents/HotNum.svg";
@@ -15,6 +15,7 @@ import { ReactComponent as StatisticIcon } from "../svgComponents/MenuIcons/Stat
 import { ReactComponent as FavoriteIcon } from "../svgComponents/MenuIcons/FavoriteIcon.svg";
 import { ReactComponent as UndoButton } from "../svgComponents/undoButton.svg";
 import { ReactComponent as ConfirmButton } from "../svgComponents/confirnButton.svg";
+import { ReactComponent as RepeatButton } from "../svgComponents/repeatButton.svg";
 import "./TokenComponent.css";
 import {
   colorsData1,
@@ -40,7 +41,12 @@ import {
 } from "../store/appData/actions";
 import GameRules from "./GameRulesComponent/GameRules";
 import Info from "./InfoComponent/Info";
-import { allBetsAC, undoBetAC } from "../store/gameSpecific/actions";
+import {
+  allBetsAC,
+  removeInValidBetsAC,
+  repeatAllBetAC,
+  undoBetAC,
+} from "../store/gameSpecific/actions";
 import BettingChip from "../svgComponents/bettingChip";
 import ChoosenChip from "../svgComponents/choosenChip";
 import { placeBetAC } from "../store/placeBet/actions";
@@ -493,6 +499,16 @@ const VerificationContainer = styled.div`
     align-items: center;
   }
 `;
+const RepeatButtonConteiner = styled.div`
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  color: #fff;
+  background: green;
+  position: absolute;
+  bottom: 22px;
+  right: 170px;
+`;
 const TokenComponent = () => {
   const {
     data1,
@@ -512,6 +528,7 @@ const TokenComponent = () => {
     bets,
     totalBetsAmount,
     chip,
+    roundStatus,
     preBetsAllowed,
     notification,
   } = useSelector((state) => ({
@@ -548,7 +565,7 @@ const TokenComponent = () => {
     dispatch(infoTabAC(active.info));
     dispatch(limitsTabAC(active.limits));
   };
-
+  const [allBetsValue, setAllBetsValue] = useState(bets);
   let limitsValue = Object.values(limits);
   let fndIdx = Object.values(limits).findIndex((idx) => idx.type === -1);
   let sliced = limitsValue.splice(fndIdx, 1);
@@ -566,6 +583,11 @@ const TokenComponent = () => {
   };
   const confirmBet = () => {
     dispatch(placeBetAC());
+    dispatch(removeInValidBetsAC());
+  };
+  const repeatBet = () => {
+    // setAllBetsValue(bets);
+    dispatch(repeatAllBetAC());
   };
   // console.log(Object.values(NotificationText)["betsAccepted"]);
   return (
@@ -597,12 +619,16 @@ const TokenComponent = () => {
         >
           <ConfirmButton />
         </ConfirmButtonContainer>
+        <RepeatButtonConteiner onClick={() => repeatBet()}>
+          <RepeatButton />
+        </RepeatButtonConteiner>
         <BettingAria>
           {limitsValue.map((item, i) => {
-            // console.log(limitsTypes[item.type]);
             let limitValueNumber = BetPointsEnum[limitsTypes[item.type]];
             let limitVerification =
               typeof limitValueNumber === "object" ? limitValueNumber[0] : 157;
+            // console.log(limitVerification);
+            // console.log(roundStatus);
             return limitsTypes[item.type] === "Table" ? (
               ""
             ) : (
@@ -619,11 +645,16 @@ const TokenComponent = () => {
                   )
                 }
               >
-                {bets[limitVerification]?.amount > 0 ? (
+                {roundStatus === 3 &&
+                bets[limitVerification]?.isValid === false ? (
+                  limitsTypes[item.type]
+                ) : bets[limitVerification]?.amount > 0 ? (
                   <BettingChip
                     key={i}
                     colorChip={chipsRangeColor[bets[limitVerification]?.amount]}
                     bets={bets[limitVerification]?.amount}
+                    valid={bets[limitVerification]?.isValid}
+                    // status={roundStatus}
                   />
                 ) : (
                   limitsTypes[item.type]

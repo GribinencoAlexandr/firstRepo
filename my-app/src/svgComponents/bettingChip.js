@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 const CircleSVG = styled.circle`
-  fill: ${({ color }) => color};
+  fill: ${({ color, valid }) => (valid ? color : "grey")};
 `;
 const SVGChip = styled.svg`
   display: ${({ bet }) => (bet > 0 ? "block" : "none")};
@@ -14,6 +14,8 @@ const BettingChip = (props) => {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 40 40"
       bet={props.bets}
+      valid={props.valid}
+      status={props.status}
     >
       <defs>
         <linearGradient id="2dc-linear-gradient-3-1647351747804-20">
@@ -29,6 +31,7 @@ const BettingChip = (props) => {
         cy="20"
         r="20"
         color={props.colorChip}
+        valid={props.valid}
       ></CircleSVG>
       <path
         id="Path_34"
