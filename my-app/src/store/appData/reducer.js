@@ -7,6 +7,7 @@ const initialState = {
   infoTab: false,
   limitsTab: false,
   notification: "",
+  perspective: "",
 };
 
 export default createReducer(initialState, {
@@ -47,6 +48,12 @@ export default createReducer(initialState, {
     return {
       ...state,
       notification: action.payload,
+    };
+  },
+  ADD_PERSPECTIVE: (state, action) => {
+    return {
+      ...state,
+      perspective: action.payload,
     };
   },
 });

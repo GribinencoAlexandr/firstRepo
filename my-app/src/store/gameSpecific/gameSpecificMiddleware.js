@@ -56,10 +56,9 @@ export const gameSpecificMiddleware = (store) => (next) => (action) => {
         action.payload.bets = newBets;
         action.payload.totalBetsAmount = newTotalBetsAmount;
         action.payload.betsSequence = dataBetsSequence;
-        action.payload.repeatBetsSequence = dataBetsSequence;
-        action.payload.repeatBets = newBets;
-        action.payload.repeatBetsAmount = newTotalBetsAmount;
-        action.payload.repeatAllBets = newAllBets;
+        // action.payload.repeatBetsSequence = dataBetsSequence;
+        // action.payload.repeatBets = newBets;
+        // action.payload.repeatBetsAmount = newTotalBetsAmount;
       }
       break;
     case "UNDO_BET":
@@ -105,12 +104,58 @@ export const gameSpecificMiddleware = (store) => (next) => (action) => {
       }
       break;
     case "CLEAR_ALL_BET":
+      action.payload = {
+        allBets: {},
+        bets: {},
+        totalBetsAmount: 0,
+        betsSequence: [],
+      };
+
+      break;
+
+    case "REMOVE_INVALID_BETS":
       {
+        const newGameSpecific = Object.assign(store.getState().gameSpecific);
+        const { allBets, bets, totalBetsAmount, betsSequence } =
+          newGameSpecific;
+        //   console.log(allBets);
+        let allBetsValid = {};
+        Object.values(allBets).forEach((item, idx) => {
+          if (allBets[Number(Object.keys(allBets)[idx])].isValid)
+            allBetsValid[Number(Object.keys(allBets)[idx])] = {
+              amount: item.amount,
+              isValid: item.isValid,
+              color: item.color,
+            };
+        });
+        let betsValid = {};
+        //   let v = Object.keys(bets).filter(
+        //     (item, idx) => item[idx] === Object.keys(allBetsValid)[idx]
+        //   );
+        Object.values(bets).forEach((item, idx) => {
+          console.log(Object.keys(bets)[idx]);
+          if (allBets[Number(Object.keys(allBets)[idx])].isValid)
+            betsValid[Number(Object.keys(bets)[idx])] = item;
+        });
+
+        console.log("seq", betsSequence);
+        console.log("seq2", Number(Object.keys(allBetsValid)[0]));
+
+        const res = betsSequence.filter(
+          (i, idx) => i.type === Number(Object.keys(allBetsValid)[idx])
+        );
+        betsSequence.forEach((i, idx) =>
+          console.log(Number(Object.keys(allBetsValid)[idx]))
+        );
+        console.log("13", res);
+
+        console.log(res);
+
         action.payload = {
-          allBets: {},
-          bets: {},
+          allBets: allBetsValid,
+          bets: betsValid,
           totalBetsAmount: 0,
-          betsSequence: [],
+          betsSequence: res,
         };
       }
       break;
@@ -149,49 +194,6 @@ export const gameSpecificMiddleware = (store) => (next) => (action) => {
           betsSequence: repeatBetsSequence,
           bets: repeatBets,
           totalBetsAmount: repeatBetsAmount,
-        };
-      }
-      break;
-    case "REMOVE_INVALID_BETS":
-      const newGameSpecific = Object.assign(store.getState().gameSpecific);
-      const { allBets, bets, totalBetsAmount, betsSequence } = newGameSpecific;
-      //   console.log(allBets);
-      let allBetsValid = {};
-      Object.values(allBets).forEach((item, idx) => {
-        if (allBets[Number(Object.keys(allBets)[idx])].isValid)
-          allBetsValid[Number(Object.keys(allBets)[idx])] = {
-            amount: item.amount,
-            isValid: item.isValid,
-            color: item.color,
-          };
-      });
-      let betsValid = {};
-      //   let v = Object.keys(bets).filter(
-      //     (item, idx) => item[idx] === Object.keys(allBetsValid)[idx]
-      //   );
-      Object.values(bets).forEach((item, idx) => {
-        console.log(Object.keys(bets)[idx]);
-        if (Object.keys(bets)[idx] === Object.keys(allBetsValid)[idx])
-          betsValid[Number(Object.keys(bets)[idx])] = item;
-      });
-
-      let validSequence = [];
-
-      Object.values(betsSequence).forEach((item, idx) => {
-        if (betsSequence[idx].type === Object.keys(allBetsValid)[idx])
-          validSequence.push({
-            type: item.type,
-            origin: "regular",
-            combinadeType: item.type,
-          });
-      });
-      console.log(validSequence);
-      {
-        action.payload = {
-          allBets: allBetsValid,
-          bets: betsValid,
-          totalBetsAmount: 0,
-          betsSequence: validSequence,
         };
       }
       break;

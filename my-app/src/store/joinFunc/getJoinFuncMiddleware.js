@@ -1,9 +1,13 @@
 import { getStatisticAC } from "../getStatistic/actions";
-import { loaderAC } from "../appData/actions";
+import { addPerspectiveAC, loaderAC } from "../appData/actions";
 import { roundStatusChangeAC } from "./actions";
 import { RoundPhaseEnum } from "../../config";
 import { placeBetAC } from "../placeBet/actions";
-import { clearAllBetAC, repeatAllBetAC } from "../gameSpecific/actions";
+import {
+  clearAllBetAC,
+  removeInValidBetsAC,
+  repeatAllBetAC,
+} from "../gameSpecific/actions";
 
 export const getJoinMiddleware = (store) => (next) => (action) => {
   switch (action.type) {
@@ -29,6 +33,7 @@ export const getJoinMiddleware = (store) => (next) => (action) => {
       );
       switch (action.payload) {
         case RoundPhaseEnum.StartRound:
+          store.dispatch(addPerspectiveAC(""));
           console.log("start");
           break;
         case RoundPhaseEnum.PlaceYourBets:
@@ -52,7 +57,12 @@ export const getJoinMiddleware = (store) => (next) => (action) => {
           // });
           // console.log(validItems);
           // store.dispatch(clearAllBetAC({ status: 3, items: validItems }));
+          store.dispatch(addPerspectiveAC("1"));
+          store.dispatch(removeInValidBetsAC());
           !preBetsAllowed && store.dispatch(placeBetAC());
+          setTimeout(() => {
+            store.dispatch(addPerspectiveAC("2"));
+          }, 2000);
           break;
         case RoundPhaseEnum.RoundResult:
           store.dispatch(clearAllBetAC());

@@ -18,9 +18,9 @@ export default createReducer(initialState, {
       bets: action.payload.bets,
       totalBetsAmount: action.payload.totalBetsAmount,
       betsSequence: action.payload.betsSequence,
-      repeatBetsSequence: action.payload.betsSequence,
-      repeatBets: action.payload.bets,
-      repeatBetsAmount: action.payload.totalBetsAmount,
+      // repeatBetsSequence: action.payload.betsSequence,
+      // repeatBets: action.payload.bets,
+      // repeatBetsAmount: action.payload.totalBetsAmount,
     };
   },
   UNDO_BET: (state, action) => {
@@ -42,7 +42,7 @@ export default createReducer(initialState, {
       betsSequence: action.payload.betsSequence,
     };
   },
-  REPEAT_ALL_BET: (state, action) => {
+  REMOVE_INVALID_BETS: (state, action) => {
     return {
       ...state,
       allBets: action.payload.allBets,
@@ -54,13 +54,16 @@ export default createReducer(initialState, {
       repeatBetsAmount: action.payload.totalBetsAmount,
     };
   },
-  REMOVE_INVALID_BETS: (state, action) => {
+  REPEAT_ALL_BET: (state, action) => {
     return {
       ...state,
       allBets: action.payload.allBets,
       bets: action.payload.bets,
       totalBetsAmount: action.payload.totalBetsAmount,
       betsSequence: action.payload.betsSequence,
+      repeatBetsSequence: action.payload.betsSequence,
+      repeatBets: action.payload.bets,
+      repeatBetsAmount: action.payload.totalBetsAmount,
     };
   },
 });

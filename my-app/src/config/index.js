@@ -8,7 +8,7 @@ export const joinFuncUrl =
 export const placeBetUrl =
   "https://services.xpgtesting.com/RService/PlaceBetsWithResult";
 export const firstReqUrl = "https://services.xpgtesting.com/ApiParams/Game/3/1";
-const gameId = "1";
+const gameId = "2";
 
 export const dataToken = {
   accessPassword: "d85fd6f5-6f11-4e88-a496-1f7d20f9f669",

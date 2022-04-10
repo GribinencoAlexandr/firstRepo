@@ -412,23 +412,35 @@ const PastResultBarItems = styled.div`
     top: 0px;
     border-radius: 50%;
 `;
-
+const BettingAriaConteiner = styled.div`
+  position: absolute;
+  left: 6%;
+  width: 100%;
+  height: 100vh;
+`;
 const BettingAria = styled.div`
   position: absolute;
   display: flex;
   left: 100px;
   top: 51px;
+  transition: all 0.8s ease 0s;
+  transform: ${({ per }) =>
+    per === "1"
+      ? "translatey(285%) scale(0.78) rotateX(6deg)"
+      : per === "2"
+      ? "translate(-20vw, 55vh) scale(0.45) rotateX(0deg)"
+      : "unset"};
 `;
 const BlackBlock = styled.div`
   background: black;
   height: 65px;
-  width: 50px;
+  width: 55px;
   border: 1px solid white;
   color: white;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 600;
   pointer-events: ${({ disabled }) => (disabled ? "none" : "unset")};
   :nth-child(2n) {
@@ -509,6 +521,9 @@ const RepeatButtonConteiner = styled.div`
   bottom: 22px;
   right: 170px;
 `;
+const BottomContainer = styled.div`
+  display: ${({ per }) => (per === "1" || per === "2" ? "none" : "block")};
+`;
 const TokenComponent = () => {
   const {
     data1,
@@ -531,6 +546,7 @@ const TokenComponent = () => {
     roundStatus,
     preBetsAllowed,
     notification,
+    perspective,
   } = useSelector((state) => ({
     data1: state.statistic.data1,
     data2: state.statistic.data2,
@@ -556,6 +572,7 @@ const TokenComponent = () => {
     roundStatus: state.playerInfo.roundStatus,
     preBetsAllowed: state.firstReq.preBetsAllowed,
     notification: state.appData.notification,
+    perspective: state.appData.perspective,
   }));
   const dispatch = useDispatch();
   const handleStat = (active, active2) => {
@@ -613,69 +630,77 @@ const TokenComponent = () => {
           </VerificationContainer>
         )}
 
-        <ConfirmButtonContainer
-          onClick={() => confirmBet()}
-          disabled={!preBetsAllowed}
-        >
-          <ConfirmButton />
-        </ConfirmButtonContainer>
-        <RepeatButtonConteiner onClick={() => repeatBet()}>
-          <RepeatButton />
-        </RepeatButtonConteiner>
-        <BettingAria>
-          {limitsValue.map((item, i) => {
-            let limitValueNumber = BetPointsEnum[limitsTypes[item.type]];
-            let limitVerification =
-              typeof limitValueNumber === "object" ? limitValueNumber[0] : 157;
-            // console.log(limitVerification);
-            // console.log(roundStatus);
-            return limitsTypes[item.type] === "Table" ? (
-              ""
-            ) : (
-              <BlackBlock
-                key={i}
-                disabled={
-                  bets[limitVerification]?.amount === item.max ||
-                  totalBetsAmount >= 10000
-                }
-                onClick={() =>
-                  handleBet(
-                    limitVerification,
-                    chip > item.max ? item.max : chip
-                  )
-                }
-              >
-                {roundStatus === 3 &&
-                bets[limitVerification]?.isValid === false ? (
-                  limitsTypes[item.type]
-                ) : bets[limitVerification]?.amount > 0 ? (
-                  <BettingChip
-                    key={i}
-                    colorChip={chipsRangeColor[bets[limitVerification]?.amount]}
-                    bets={bets[limitVerification]?.amount}
-                    valid={bets[limitVerification]?.isValid}
-                    // status={roundStatus}
-                  />
+        <BettingAriaConteiner>
+          <div className="perspective">
+            <BettingAria per={perspective}>
+              {limitsValue.map((item, i) => {
+                let limitValueNumber = BetPointsEnum[limitsTypes[item.type]];
+                let limitVerification =
+                  typeof limitValueNumber === "object"
+                    ? limitValueNumber[0]
+                    : 157;
+                // console.log(limitVerification);
+                // console.log(roundStatus);
+                return limitsTypes[item.type] === "Table" ? (
+                  ""
                 ) : (
-                  limitsTypes[item.type]
-                )}
-              </BlackBlock>
-            );
-          })}
-        </BettingAria>
+                  <BlackBlock
+                    key={i}
+                    disabled={
+                      bets[limitVerification]?.amount === item.max ||
+                      totalBetsAmount >= 10000
+                    }
+                    onClick={() =>
+                      handleBet(
+                        limitVerification,
+                        chip > item.max ? item.max : chip
+                      )
+                    }
+                  >
+                    {bets[limitVerification]?.amount > 0 ? (
+                      <BettingChip
+                        key={i}
+                        colorChip={
+                          chipsRangeColor[bets[limitVerification]?.amount]
+                        }
+                        bets={bets[limitVerification]?.amount}
+                        valid={bets[limitVerification]?.isValid}
+                        // status={roundStatus}
+                      />
+                    ) : (
+                      limitsTypes[item.type]
+                    )}
+                  </BlackBlock>
+                );
+              })}
+            </BettingAria>
+          </div>
+        </BettingAriaConteiner>
 
-        <ChooseBetContainer>
-          Choose your bet{" "}
-          <AllChips>
-            <ChoosenChip color="#cd95ff" chip={1} />
-            <ChoosenChip color="green" chip={3} />
-            <ChoosenChip color="red" chip={5} />
-          </AllChips>
-        </ChooseBetContainer>
+        <BottomContainer per={perspective}>
+          <ChooseBetContainer>
+            Choose your bet{" "}
+            <AllChips>
+              <ChoosenChip color="#cd95ff" chip={1} />
+              <ChoosenChip color="green" chip={3} />
+              <ChoosenChip color="red" chip={5} />
+            </AllChips>
+          </ChooseBetContainer>
 
-        <UndoButtonConteiner>
-          <UndoButton onClick={handleUndo} />
-        </UndoButtonConteiner>
+          <ConfirmButtonContainer
+            onClick={() => confirmBet()}
+            disabled={!preBetsAllowed}
+          >
+            <ConfirmButton />
+          </ConfirmButtonContainer>
+          <RepeatButtonConteiner onClick={() => repeatBet()}>
+            <RepeatButton />
+          </RepeatButtonConteiner>
+
+          <UndoButtonConteiner>
+            <UndoButton onClick={handleUndo} />
+          </UndoButtonConteiner>
+        </BottomContainer>
 
         <div className="openBtn">
           <StatSVG
@@ -694,7 +719,6 @@ const TokenComponent = () => {
             <MenuButton onClick={() => handleStat({ menu: true })} />
           </div>
         </MenuButtonContainer>
-
         <MenuMainContainer menuClose={menuTab}>
           <div className="scrollMenu">
             <MenuItem>
