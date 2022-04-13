@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { ReactComponent as HotNumLogo } from "../svgComponents/HotNum.svg";
@@ -50,6 +50,8 @@ import {
 import BettingChip from "../svgComponents/bettingChip";
 import ChoosenChip from "../svgComponents/choosenChip";
 import { placeBetAC } from "../store/placeBet/actions";
+import { ResizeContext } from "../Contexts/ResizeContext";
+
 const Wrapper = styled.div`
   height: 100vh;
   display: flex;
@@ -268,6 +270,11 @@ const StatSVG = styled.svg`
   padding: 20%;
 `;
 const MenuButtonContainer = styled.div`
+  @media (orientation: portrait) {
+    bottom: 139px;
+    right: 1.5%;
+    left: initial;
+  }
   display: ${({ menuClose }) => (menuClose ? "none" : "block")};
   position: absolute;
   bottom: 21px;
@@ -380,6 +387,19 @@ const Tr = styled.tr`
   // display: ${({ hidden2 }) => (hidden2 === -1 ? "none" : "flex!important")};
 `;
 const PastResultBar = styled.div`
+  @media (orientation: portrait) {
+    position: absolute;
+    flex-direction: row;
+    border-radius: 22px;
+    width: 97%;
+    height: 35px;
+    bottom: 15px;
+    padding: 16px 0px;
+    margin: 0px 1.5%;
+    left: initial;
+    top: initial;
+  }
+
   height: 244px;
   width: 30px;
   background: #000000b3;
@@ -391,17 +411,34 @@ const PastResultBar = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
 `;
 const PastResultBarItems = styled.div`
-  font-size: 16px;
-  padding: 3px;
+  @media (orientation: landscape) {
+    :first-of-type {
+      height: 28px;
+      width: 100%;
+    }
+    :last-of-type: {
+      padding-bottom: 5px;
+    }
+  }
+  @media (orientation: portrait) {
+    :first-of-type {
+      font-size: 15px;
+      width: 35px;
+      height: 35px;
+    }
+  }
+  font-size: 15px;
+  width: 40px;
+  text-align: center;
   color: ${({ color }) => color};
   :first-of-type {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 28px;
-    width: 100%;
+
     background: ${({ color }) =>
       color === "#FF3333"
         ? "rgb(255, 51, 51)"
@@ -411,6 +448,8 @@ const PastResultBarItems = styled.div`
     color: rgb(255, 255, 255);
     top: 0px;
     border-radius: 50%;
+    position: relative;
+  }
 `;
 const BettingAriaConteiner = styled.div`
   position: absolute;
@@ -419,6 +458,9 @@ const BettingAriaConteiner = styled.div`
   height: 100vh;
 `;
 const BettingAria = styled.div`
+  @media (orientation: portrait) {
+    left: 0;
+  }
   position: absolute;
   display: flex;
   left: 100px;
@@ -524,6 +566,25 @@ const RepeatButtonConteiner = styled.div`
 const BottomContainer = styled.div`
   display: ${({ per }) => (per === "1" || per === "2" ? "none" : "block")};
 `;
+const StatisticButtonContainer = styled.div`
+  @media (orientation: portrait) {
+    bottom: 83px;
+    right: 1.5%;
+    left: initial;
+  }
+  position: absolute;
+  bottom: 21px;
+  right: 80px;
+  width: 46px;
+  height: 46px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  color: rgb(255, 255, 255);
+  background: rgb(26, 26, 26);
+  button {
+    border-radius: 46%;
+  }
+`;
 const TokenComponent = () => {
   const {
     data1,
@@ -543,7 +604,6 @@ const TokenComponent = () => {
     bets,
     totalBetsAmount,
     chip,
-    roundStatus,
     preBetsAllowed,
     notification,
     perspective,
@@ -582,7 +642,7 @@ const TokenComponent = () => {
     dispatch(infoTabAC(active.info));
     dispatch(limitsTabAC(active.limits));
   };
-  const [allBetsValue, setAllBetsValue] = useState(bets);
+  // const [orientation, setOrientation] = useState(window.innerHeight);
   let limitsValue = Object.values(limits);
   let fndIdx = Object.values(limits).findIndex((idx) => idx.type === -1);
   let sliced = limitsValue.splice(fndIdx, 1);
@@ -603,393 +663,418 @@ const TokenComponent = () => {
     dispatch(removeInValidBetsAC());
   };
   const repeatBet = () => {
-    // setAllBetsValue(bets);
     dispatch(repeatAllBetAC());
   };
-  // console.log(Object.values(NotificationText)["betsAccepted"]);
+
+  // const isVertical = () => {
+  //   let vertical = window.innerHeight > window.innerWidth;
+  //   let orintationResult = vertical ? window.innerWidth : window.innerHeight;
+  //   // orintationResult === window.innerWidth
+  //   //   ? console.log("vertical")
+  //   //   : console.log("horizontal");
+  //   setOrientation(orintationResult);
+  // };
+  // useEffect(() => {
+  //   window.addEventListener("resize", isVertical);
+  //   console.log("1224");
+  //   return () => window.removeEventListener("resize", isVertical);
+  // }, []);
   return (
-    <Wrapper>
-      <Header />
-      <MainContainer>
-        <PastResultBar>
-          {stats.pastResults
-            .slice()
-            .reverse()
-            .map((item, i) => {
-              return (
-                <PastResultBarItems color={numberColors[item]} key={i}>
-                  {item}
-                </PastResultBarItems>
-              );
-            })}
-        </PastResultBar>
+    <ResizeContext.Consumer>
+      {({ orientation }) => {
+        return (
+          <Wrapper>
+            <Header />
+            <MainContainer>
+              <PastResultBar>
+                {stats.pastResults
+                  .slice()
+                  .splice(stats.pastResults.length - 8)
+                  .reverse()
+                  .map((item, i) => {
+                    return (
+                      <PastResultBarItems color={numberColors[item]} key={i}>
+                        {item}
+                      </PastResultBarItems>
+                    );
+                  })}
+              </PastResultBar>
 
-        {notification && (
-          <VerificationContainer>
-            <div>{notification}</div>
-          </VerificationContainer>
-        )}
+              {orientation ? console.log("vert") : console.log("hor")}
+              {notification && (
+                <VerificationContainer>
+                  <div>{notification}</div>
+                </VerificationContainer>
+              )}
 
-        <BettingAriaConteiner>
-          <div className="perspective">
-            <BettingAria per={perspective}>
-              {limitsValue.map((item, i) => {
-                let limitValueNumber = BetPointsEnum[limitsTypes[item.type]];
-                let limitVerification =
-                  typeof limitValueNumber === "object"
-                    ? limitValueNumber[0]
-                    : 157;
-                // console.log(limitVerification);
-                // console.log(roundStatus);
-                return limitsTypes[item.type] === "Table" ? (
-                  ""
-                ) : (
-                  <BlackBlock
-                    key={i}
-                    disabled={
-                      bets[limitVerification]?.amount === item.max ||
-                      totalBetsAmount >= 10000
-                    }
-                    onClick={() =>
-                      handleBet(
-                        limitVerification,
-                        chip > item.max ? item.max : chip
-                      )
-                    }
-                  >
-                    {bets[limitVerification]?.amount > 0 ? (
-                      <BettingChip
-                        key={i}
-                        colorChip={
-                          chipsRangeColor[bets[limitVerification]?.amount]
-                        }
-                        bets={bets[limitVerification]?.amount}
-                        valid={bets[limitVerification]?.isValid}
-                        // status={roundStatus}
-                      />
-                    ) : (
-                      limitsTypes[item.type]
-                    )}
-                  </BlackBlock>
-                );
-              })}
-            </BettingAria>
-          </div>
-        </BettingAriaConteiner>
-
-        <BottomContainer per={perspective}>
-          <ChooseBetContainer>
-            Choose your bet{" "}
-            <AllChips>
-              <ChoosenChip color="#cd95ff" chip={1} />
-              <ChoosenChip color="green" chip={3} />
-              <ChoosenChip color="red" chip={5} />
-            </AllChips>
-          </ChooseBetContainer>
-
-          <ConfirmButtonContainer
-            onClick={() => confirmBet()}
-            disabled={!preBetsAllowed}
-          >
-            <ConfirmButton />
-          </ConfirmButtonContainer>
-          <RepeatButtonConteiner onClick={() => repeatBet()}>
-            <RepeatButton />
-          </RepeatButtonConteiner>
-
-          <UndoButtonConteiner>
-            <UndoButton onClick={handleUndo} />
-          </UndoButtonConteiner>
-        </BottomContainer>
-
-        <div className="openBtn">
-          <StatSVG
-            onClick={() => handleStat({ statistic: true })}
-            viewBox="0 0 24 24"
-          >
-            <path
-              d="M0 12a12 12 0 1 1 12 12A12 12 0 0 1 0 12zm12 10.154a10.154 10.154 0 0 0 9.355-14.1L12 12l8.687 1.2-.563 2.1L12 12l8.324 4.927-1.469 1.9L12 12l3.252 4.3-1.157.669L12 12l2.177 8.5-2.158.274L12 12l1.2-8.687 2.1.563L12 12l4.467-7.546 1.72 1.331L12 12l8.093-6.126A10.152 10.152 0 0 0 2.645 15.947L12 12l-6.01 1.541-.194-1.527L12 12l-8.687-1.2.563-2.1L12 12 8.748 7.7l1.157-.668L12 12l-1.2 8.687-2.1-.563L12 12l-4.468 7.547-1.72-1.332L12 12l-8.093 6.126A10.145 10.145 0 0 0 12 22.153zM12 12zm0 0zm0 0zm0 0zm0 0zm0 0zm0 0zm0 0zm0 0zM9.823 3.506l2.158-.274L12 12zM3.676 7.073l1.469-1.9L12 12zm14.334 3.388.194 1.526L12 12z"
-              fill="#fff"
-            />
-          </StatSVG>
-        </div>
-
-        <MenuButtonContainer menuClose={menuTab}>
-          <div className="menuButtonPadding">
-            <MenuButton onClick={() => handleStat({ menu: true })} />
-          </div>
-        </MenuButtonContainer>
-        <MenuMainContainer menuClose={menuTab}>
-          <div className="scrollMenu">
-            <MenuItem>
-              <MenuItemConteiner>
-                <MenuItemIcon>
-                  <LobbyIcon />
-                </MenuItemIcon>
-                <MenuItemTitle>Lobby</MenuItemTitle>
-              </MenuItemConteiner>
-            </MenuItem>
-            <MenuItem>
-              <MenuItemConteiner>
-                <MenuItemIcon>
-                  <HistoryIcon />
-                </MenuItemIcon>
-                <MenuItemTitle>History</MenuItemTitle>
-              </MenuItemConteiner>
-            </MenuItem>
-            <MenuItem>
-              <MenuItemConteiner>
-                <MenuItemIcon>
-                  <SettingsIcon />
-                </MenuItemIcon>
-                <MenuItemTitle>Settings</MenuItemTitle>
-              </MenuItemConteiner>
-            </MenuItem>
-            <MenuItem>
-              <MenuItemConteiner>
-                <MenuItemIcon>
-                  <GameRulesIcon />
-                </MenuItemIcon>
-                <MenuItemTitle onClick={() => handleStat({ gameRule: true })}>
-                  Game Rules
-                </MenuItemTitle>
-              </MenuItemConteiner>
-            </MenuItem>
-            <MenuItem onClick={() => handleStat({ limits: true })}>
-              <MenuItemConteiner>
-                <MenuItemIcon>
-                  <LimitsIcon />
-                </MenuItemIcon>
-                <MenuItemTitle>Limits</MenuItemTitle>
-              </MenuItemConteiner>
-            </MenuItem>
-            <MenuItem onClick={() => handleStat({ info: true })}>
-              <MenuItemConteiner>
-                <MenuItemIcon>
-                  <InfoIcon />
-                </MenuItemIcon>
-                <MenuItemTitle>Info</MenuItemTitle>
-              </MenuItemConteiner>
-            </MenuItem>
-            <MenuItem onClick={() => handleStat({ statistic: true })}>
-              <MenuItemConteiner>
-                <MenuItemIcon>
-                  <StatisticIcon />
-                </MenuItemIcon>
-                <MenuItemTitle>Statistics</MenuItemTitle>
-              </MenuItemConteiner>
-            </MenuItem>
-            <MenuItem>
-              <MenuItemConteiner>
-                <MenuItemIcon>
-                  <FavoriteIcon />
-                </MenuItemIcon>
-                <MenuItemTitle>Favorite Bets</MenuItemTitle>
-              </MenuItemConteiner>
-            </MenuItem>
-          </div>
-        </MenuMainContainer>
-
-        <GameRulesContainer gameRuleClose={gameRuleTab}>
-          <MenuElementsTitleContainer>
-            <MenuElementsIconContainer>
-              <GameRulesIcon />
-            </MenuElementsIconContainer>
-            <MenuElementsSpan>GAME RULES</MenuElementsSpan>
-          </MenuElementsTitleContainer>
-          <MenuElementsContent>
-            <ContentScroll>
-              <GameRules />
-            </ContentScroll>
-          </MenuElementsContent>
-        </GameRulesContainer>
-
-        <InfoMainContainer infoClose={infoTab}>
-          <MenuElementsTitleContainer>
-            <MenuElementsIconContainer>
-              <InfoIcon />
-            </MenuElementsIconContainer>
-            <MenuElementsSpan>info</MenuElementsSpan>
-          </MenuElementsTitleContainer>
-          <MenuElementsContent>
-            <ContentScroll>
-              <Info />
-            </ContentScroll>
-          </MenuElementsContent>
-        </InfoMainContainer>
-
-        <LimitsMainContainer limitsClose={limitsTab}>
-          <MenuElementsTitleContainer>
-            <MenuElementsIconContainer>
-              <LimitsIcon />
-            </MenuElementsIconContainer>
-            <MenuElementsSpan>limits</MenuElementsSpan>
-          </MenuElementsTitleContainer>
-          <MenuElementsContent>
-            <ContentScroll>
-              <LimitsContainer>
-                <table>
-                  <tbody>
-                    <tr>
-                      <th></th>
-                    </tr>
-
+              <BettingAriaConteiner>
+                <div className="perspective">
+                  <BettingAria per={perspective}>
                     {limitsValue.map((item, i) => {
-                      return (
-                        <Tr key={i}>
-                          <td>{limitsTypes[item.type]}</td>
-                          <td>
-                            {item.min}-{item.max}
-                          </td>
-                        </Tr>
+                      let limitValueNumber =
+                        BetPointsEnum[limitsTypes[item.type]];
+                      let limitVerification =
+                        typeof limitValueNumber === "object"
+                          ? limitValueNumber[0]
+                          : 157;
+                      // console.log(limitVerification);
+                      // console.log(roundStatus);
+                      return limitsTypes[item.type] === "Table" ? (
+                        ""
+                      ) : (
+                        <BlackBlock
+                          key={i}
+                          disabled={
+                            bets[limitVerification]?.amount === item.max ||
+                            totalBetsAmount >= 10000
+                          }
+                          onClick={() =>
+                            handleBet(
+                              limitVerification,
+                              chip > item.max ? item.max : chip
+                            )
+                          }
+                        >
+                          {bets[limitVerification]?.amount > 0 ? (
+                            <BettingChip
+                              key={i}
+                              colorChip={
+                                chipsRangeColor[bets[limitVerification]?.amount]
+                              }
+                              bets={bets[limitVerification]?.amount}
+                              valid={bets[limitVerification]?.isValid}
+                              // status={roundStatus}
+                            />
+                          ) : (
+                            limitsTypes[item.type]
+                          )}
+                        </BlackBlock>
                       );
                     })}
-                    <tr>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </LimitsContainer>
-            </ContentScroll>
-          </MenuElementsContent>
-        </LimitsMainContainer>
+                  </BettingAria>
+                </div>
+              </BettingAriaConteiner>
 
-        <Container stat={statTab}>
-          <div className="statBars">
-            <StatBar>
-              {Object.keys(data1).map((item, i) => {
-                return (
-                  <BarItems key={i}>
-                    <div className="barItemName">
-                      <SpanNameFirst color={colorsData1[item]}>
-                        {namesData1[item]} {data1[item]}%
-                      </SpanNameFirst>
-                    </div>
-                    <div className="barItemProgressbar">
-                      <ProgressBar
-                        value={data1[item]}
-                        color={colorsData1[item]}
-                      ></ProgressBar>
-                    </div>
-                  </BarItems>
-                );
-              })}
-            </StatBar>
-            <StatBar>
-              <BarNames>
-                {Object.keys(data2).map((item, i) => {
-                  return (
-                    <SpanNameFirst2
-                      key={i}
-                      color={colorsData2[item]}
-                      className="someClass"
-                    >
-                      {namesData2[item]} {data2[item]}%
-                    </SpanNameFirst2>
-                  );
-                })}
-              </BarNames>
-              <StatBarConteiner>
-                {Object.keys(data2).map((item, i) => {
-                  return (
-                    <BarItemsFirst
-                      key={i}
-                      color={colorsData2[item]}
-                      width={data2[item]}
-                    ></BarItemsFirst>
-                  );
-                })}
-              </StatBarConteiner>
-            </StatBar>
-            <StatBar>
-              <BarNames>
-                {Object.keys(data3).map((item, i) => {
-                  return (
-                    <SpanNameFirst2
-                      key={i}
-                      color={colorsData3[item]}
-                      className="someClass"
-                    >
-                      {namesData3[item]} {data3[item]}%
-                    </SpanNameFirst2>
-                  );
-                })}
-              </BarNames>
-              <StatBarConteiner>
-                {Object.keys(data3).map((item, i) => {
-                  return (
-                    <BarItemsFirst
-                      key={i}
-                      color={colorsData3[item]}
-                      width={data3[item]}
-                    ></BarItemsFirst>
-                  );
-                })}
-              </StatBarConteiner>
-            </StatBar>
-            <HotNumConteiner>
-              <HotNumTitle>HOT NUMBERS</HotNumTitle>
-              <HotNumBar>
-                <IconContainer>
-                  <HotNumLogo />
-                </IconContainer>
-                <HotNumbers>
-                  {Object.keys(hotNumData).map((item, i) => {
-                    return (
-                      <HotNumItem
-                        color={numberColors[hotNumData[item]]}
-                        key={i}
+              <BottomContainer per={perspective}>
+                <ChooseBetContainer>
+                  Choose your bet{" "}
+                  <AllChips>
+                    <ChoosenChip color="#cd95ff" chip={1} />
+                    <ChoosenChip color="green" chip={3} />
+                    <ChoosenChip color="red" chip={5} />
+                  </AllChips>
+                </ChooseBetContainer>
+
+                <ConfirmButtonContainer
+                  onClick={() => confirmBet()}
+                  disabled={!preBetsAllowed}
+                >
+                  <ConfirmButton />
+                </ConfirmButtonContainer>
+                <RepeatButtonConteiner onClick={() => repeatBet()}>
+                  <RepeatButton />
+                </RepeatButtonConteiner>
+
+                <UndoButtonConteiner>
+                  <UndoButton onClick={handleUndo} />
+                </UndoButtonConteiner>
+              </BottomContainer>
+
+              <StatisticButtonContainer>
+                <StatSVG
+                  onClick={() => handleStat({ statistic: true })}
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M0 12a12 12 0 1 1 12 12A12 12 0 0 1 0 12zm12 10.154a10.154 10.154 0 0 0 9.355-14.1L12 12l8.687 1.2-.563 2.1L12 12l8.324 4.927-1.469 1.9L12 12l3.252 4.3-1.157.669L12 12l2.177 8.5-2.158.274L12 12l1.2-8.687 2.1.563L12 12l4.467-7.546 1.72 1.331L12 12l8.093-6.126A10.152 10.152 0 0 0 2.645 15.947L12 12l-6.01 1.541-.194-1.527L12 12l-8.687-1.2.563-2.1L12 12 8.748 7.7l1.157-.668L12 12l-1.2 8.687-2.1-.563L12 12l-4.468 7.547-1.72-1.332L12 12l-8.093 6.126A10.145 10.145 0 0 0 12 22.153zM12 12zm0 0zm0 0zm0 0zm0 0zm0 0zm0 0zm0 0zm0 0zM9.823 3.506l2.158-.274L12 12zM3.676 7.073l1.469-1.9L12 12zm14.334 3.388.194 1.526L12 12z"
+                    fill="#fff"
+                  />
+                </StatSVG>
+              </StatisticButtonContainer>
+
+              <MenuButtonContainer menuClose={menuTab}>
+                <div className="menuButtonPadding">
+                  <MenuButton onClick={() => handleStat({ menu: true })} />
+                </div>
+              </MenuButtonContainer>
+              <MenuMainContainer menuClose={menuTab}>
+                <div className="scrollMenu">
+                  <MenuItem>
+                    <MenuItemConteiner>
+                      <MenuItemIcon>
+                        <LobbyIcon />
+                      </MenuItemIcon>
+                      <MenuItemTitle>Lobby</MenuItemTitle>
+                    </MenuItemConteiner>
+                  </MenuItem>
+                  <MenuItem>
+                    <MenuItemConteiner>
+                      <MenuItemIcon>
+                        <HistoryIcon />
+                      </MenuItemIcon>
+                      <MenuItemTitle>History</MenuItemTitle>
+                    </MenuItemConteiner>
+                  </MenuItem>
+                  <MenuItem>
+                    <MenuItemConteiner>
+                      <MenuItemIcon>
+                        <SettingsIcon />
+                      </MenuItemIcon>
+                      <MenuItemTitle>Settings</MenuItemTitle>
+                    </MenuItemConteiner>
+                  </MenuItem>
+                  <MenuItem>
+                    <MenuItemConteiner>
+                      <MenuItemIcon>
+                        <GameRulesIcon />
+                      </MenuItemIcon>
+                      <MenuItemTitle
+                        onClick={() => handleStat({ gameRule: true })}
                       >
-                        {hotNumData[item]}
-                      </HotNumItem>
-                    );
-                  })}
-                </HotNumbers>
-              </HotNumBar>
-            </HotNumConteiner>
-            <ColdNumConteiner>
-              <ColdNumTitle>COLD NUMBERS</ColdNumTitle>
-              <ColdNumBar>
-                <IconContainer2>
-                  <ColdNumLogo />
-                </IconContainer2>
-                <HotNumbers>
-                  {Object.keys(coldNumData).map((item, i) => {
-                    return (
-                      <ColdNumItem
-                        color={numberColors[coldNumData[item]]}
-                        key={i}
-                      >
-                        {coldNumData[item]}
-                      </ColdNumItem>
-                    );
-                  })}
-                </HotNumbers>
-              </ColdNumBar>
-            </ColdNumConteiner>
-            <Slider />
-          </div>
+                        Game Rules
+                      </MenuItemTitle>
+                    </MenuItemConteiner>
+                  </MenuItem>
+                  <MenuItem onClick={() => handleStat({ limits: true })}>
+                    <MenuItemConteiner>
+                      <MenuItemIcon>
+                        <LimitsIcon />
+                      </MenuItemIcon>
+                      <MenuItemTitle>Limits</MenuItemTitle>
+                    </MenuItemConteiner>
+                  </MenuItem>
+                  <MenuItem onClick={() => handleStat({ info: true })}>
+                    <MenuItemConteiner>
+                      <MenuItemIcon>
+                        <InfoIcon />
+                      </MenuItemIcon>
+                      <MenuItemTitle>Info</MenuItemTitle>
+                    </MenuItemConteiner>
+                  </MenuItem>
+                  <MenuItem onClick={() => handleStat({ statistic: true })}>
+                    <MenuItemConteiner>
+                      <MenuItemIcon>
+                        <StatisticIcon />
+                      </MenuItemIcon>
+                      <MenuItemTitle>Statistics</MenuItemTitle>
+                    </MenuItemConteiner>
+                  </MenuItem>
+                  <MenuItem>
+                    <MenuItemConteiner>
+                      <MenuItemIcon>
+                        <FavoriteIcon />
+                      </MenuItemIcon>
+                      <MenuItemTitle>Favorite Bets</MenuItemTitle>
+                    </MenuItemConteiner>
+                  </MenuItem>
+                </div>
+              </MenuMainContainer>
 
-          <div className="roulleteS">
-            <Roullete />
-            <NumRounds>LAST {roundsNumber} ROUNDS</NumRounds>
-          </div>
-        </Container>
+              <GameRulesContainer gameRuleClose={gameRuleTab}>
+                <MenuElementsTitleContainer>
+                  <MenuElementsIconContainer>
+                    <GameRulesIcon />
+                  </MenuElementsIconContainer>
+                  <MenuElementsSpan>GAME RULES</MenuElementsSpan>
+                </MenuElementsTitleContainer>
+                <MenuElementsContent>
+                  <ContentScroll>
+                    <GameRules />
+                  </ContentScroll>
+                </MenuElementsContent>
+              </GameRulesContainer>
 
-        <CloseButtonContainer
-          closeStat={statTab}
-          menuClose={menuTab}
-          closeGameRule={gameRuleTab}
-          closeInfo={infoTab}
-          limitsClose={limitsTab}
-        >
-          <CloseButton
-            onClick={() => handleStat({ statistic: false }, { menu: false })}
-          />
-        </CloseButtonContainer>
-      </MainContainer>
-    </Wrapper>
+              <InfoMainContainer infoClose={infoTab}>
+                <MenuElementsTitleContainer>
+                  <MenuElementsIconContainer>
+                    <InfoIcon />
+                  </MenuElementsIconContainer>
+                  <MenuElementsSpan>info</MenuElementsSpan>
+                </MenuElementsTitleContainer>
+                <MenuElementsContent>
+                  <ContentScroll>
+                    <Info />
+                  </ContentScroll>
+                </MenuElementsContent>
+              </InfoMainContainer>
+
+              <LimitsMainContainer limitsClose={limitsTab}>
+                <MenuElementsTitleContainer>
+                  <MenuElementsIconContainer>
+                    <LimitsIcon />
+                  </MenuElementsIconContainer>
+                  <MenuElementsSpan>limits</MenuElementsSpan>
+                </MenuElementsTitleContainer>
+                <MenuElementsContent>
+                  <ContentScroll>
+                    <LimitsContainer>
+                      <table>
+                        <tbody>
+                          <tr>
+                            <th></th>
+                          </tr>
+
+                          {limitsValue.map((item, i) => {
+                            return (
+                              <Tr key={i}>
+                                <td>{limitsTypes[item.type]}</td>
+                                <td>
+                                  {item.min}-{item.max}
+                                </td>
+                              </Tr>
+                            );
+                          })}
+                          <tr>
+                            <td></td>
+                            <td></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </LimitsContainer>
+                  </ContentScroll>
+                </MenuElementsContent>
+              </LimitsMainContainer>
+
+              <Container stat={statTab}>
+                <div className="statBars">
+                  <StatBar>
+                    {Object.keys(data1).map((item, i) => {
+                      return (
+                        <BarItems key={i}>
+                          <div className="barItemName">
+                            <SpanNameFirst color={colorsData1[item]}>
+                              {namesData1[item]} {data1[item]}%
+                            </SpanNameFirst>
+                          </div>
+                          <div className="barItemProgressbar">
+                            <ProgressBar
+                              value={data1[item]}
+                              color={colorsData1[item]}
+                            ></ProgressBar>
+                          </div>
+                        </BarItems>
+                      );
+                    })}
+                  </StatBar>
+                  <StatBar>
+                    <BarNames>
+                      {Object.keys(data2).map((item, i) => {
+                        return (
+                          <SpanNameFirst2
+                            key={i}
+                            color={colorsData2[item]}
+                            className="someClass"
+                          >
+                            {namesData2[item]} {data2[item]}%
+                          </SpanNameFirst2>
+                        );
+                      })}
+                    </BarNames>
+                    <StatBarConteiner>
+                      {Object.keys(data2).map((item, i) => {
+                        return (
+                          <BarItemsFirst
+                            key={i}
+                            color={colorsData2[item]}
+                            width={data2[item]}
+                          ></BarItemsFirst>
+                        );
+                      })}
+                    </StatBarConteiner>
+                  </StatBar>
+                  <StatBar>
+                    <BarNames>
+                      {Object.keys(data3).map((item, i) => {
+                        return (
+                          <SpanNameFirst2
+                            key={i}
+                            color={colorsData3[item]}
+                            className="someClass"
+                          >
+                            {namesData3[item]} {data3[item]}%
+                          </SpanNameFirst2>
+                        );
+                      })}
+                    </BarNames>
+                    <StatBarConteiner>
+                      {Object.keys(data3).map((item, i) => {
+                        return (
+                          <BarItemsFirst
+                            key={i}
+                            color={colorsData3[item]}
+                            width={data3[item]}
+                          ></BarItemsFirst>
+                        );
+                      })}
+                    </StatBarConteiner>
+                  </StatBar>
+                  <HotNumConteiner>
+                    <HotNumTitle>HOT NUMBERS</HotNumTitle>
+                    <HotNumBar>
+                      <IconContainer>
+                        <HotNumLogo />
+                      </IconContainer>
+                      <HotNumbers>
+                        {Object.keys(hotNumData).map((item, i) => {
+                          return (
+                            <HotNumItem
+                              color={numberColors[hotNumData[item]]}
+                              key={i}
+                            >
+                              {hotNumData[item]}
+                            </HotNumItem>
+                          );
+                        })}
+                      </HotNumbers>
+                    </HotNumBar>
+                  </HotNumConteiner>
+                  <ColdNumConteiner>
+                    <ColdNumTitle>COLD NUMBERS</ColdNumTitle>
+                    <ColdNumBar>
+                      <IconContainer2>
+                        <ColdNumLogo />
+                      </IconContainer2>
+                      <HotNumbers>
+                        {Object.keys(coldNumData).map((item, i) => {
+                          return (
+                            <ColdNumItem
+                              color={numberColors[coldNumData[item]]}
+                              key={i}
+                            >
+                              {coldNumData[item]}
+                            </ColdNumItem>
+                          );
+                        })}
+                      </HotNumbers>
+                    </ColdNumBar>
+                  </ColdNumConteiner>
+                  <Slider />
+                </div>
+
+                <div className="roulleteS">
+                  <Roullete />
+                  <NumRounds>LAST {roundsNumber} ROUNDS</NumRounds>
+                </div>
+              </Container>
+
+              <CloseButtonContainer
+                closeStat={statTab}
+                menuClose={menuTab}
+                closeGameRule={gameRuleTab}
+                closeInfo={infoTab}
+                limitsClose={limitsTab}
+              >
+                <CloseButton
+                  onClick={() =>
+                    handleStat({ statistic: false }, { menu: false })
+                  }
+                />
+              </CloseButtonContainer>
+            </MainContainer>
+          </Wrapper>
+        );
+      }}
+    </ResizeContext.Consumer>
   );
 };
 

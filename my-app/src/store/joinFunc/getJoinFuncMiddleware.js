@@ -3,11 +3,7 @@ import { addPerspectiveAC, loaderAC } from "../appData/actions";
 import { roundStatusChangeAC } from "./actions";
 import { RoundPhaseEnum } from "../../config";
 import { placeBetAC } from "../placeBet/actions";
-import {
-  clearAllBetAC,
-  removeInValidBetsAC,
-  repeatAllBetAC,
-} from "../gameSpecific/actions";
+import { clearAllBetAC, removeInValidBetsAC } from "../gameSpecific/actions";
 
 export const getJoinMiddleware = (store) => (next) => (action) => {
   switch (action.type) {
@@ -28,9 +24,6 @@ export const getJoinMiddleware = (store) => (next) => (action) => {
     }
     case "ROUND_STATUS_CHANGE": {
       const { preBetsAllowed } = store.getState().firstReq;
-      const { allBets, bets, totalBetsAmount, betsSequence } = Object.assign(
-        store.getState().gameSpecific
-      );
       switch (action.payload) {
         case RoundPhaseEnum.StartRound:
           store.dispatch(addPerspectiveAC(""));
